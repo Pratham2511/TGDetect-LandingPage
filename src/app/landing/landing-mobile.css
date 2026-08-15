@@ -1,7 +1,7 @@
 /* ============================================================
    TGDetect Landing Page — MOBILE STYLESHEET (max-width: 1023px)
    Loaded via @import in landing.css
-   Optimized for vertical thumb navigation.
+   Neural Signal color system — all elements use var(--sec-*)
    ============================================================ */
 
 @media (max-width: 1023px) {
@@ -16,10 +16,10 @@
     left: 0;
     right: 0;
     z-index: 100;
-    background: rgba(5, 14, 8, 0.92);
+    background: rgba(4, 6, 15, 0.92);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid rgba(108, 99, 255, 0.15);
   }
 
   .landing-nav.scrolled {
@@ -38,7 +38,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: var(--sec-bg, #060C1A);
+    background: var(--sec-bg, #04060F);
     padding: 40px 24px;
     gap: 28px;
     z-index: 99;
@@ -48,7 +48,7 @@
   .nav-links.mobile-open a {
     font-size: 22px;
     font-weight: 600;
-    color: var(--sec-text-1, #F0F6FF);
+    color: var(--sec-text-1, #F0EEFF);
     text-decoration: none;
     cursor: pointer;
     background: none;
@@ -66,7 +66,6 @@
     display: none;
   }
 
-  /* Mobile CTA buttons shown inside the drawer when menu is open */
   .nav-cta-mobile {
     display: none;
   }
@@ -77,7 +76,7 @@
     gap: 12px;
     margin-top: 24px;
     padding-top: 24px;
-    border-top: 1px solid var(--sec-border, rgba(255, 255, 255, 0.1));
+    border-top: 1px solid var(--sec-border, rgba(108, 99, 255, 0.15));
   }
 
   .nav-links.mobile-open .nav-cta-mobile a {
@@ -102,7 +101,7 @@
     display: block;
     width: 22px;
     height: 2px;
-    background: var(--sec-text-1, #F0F6FF);
+    background: var(--sec-text-1, #F0EEFF);
     transition: all 0.3s ease;
     border-radius: 1px;
   }
@@ -168,12 +167,12 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: rgba(76, 175, 80, 0.1);
-    border: 1px solid rgba(76, 175, 80, 0.3);
+    background: rgba(108, 99, 255, 0.1);
+    border: 1px solid rgba(108, 99, 255, 0.3);
     border-radius: 16px;
     padding: 5px 12px;
     font-size: 11px;
-    color: var(--sec-accent-1, #1A6FFF);
+    color: var(--sec-accent-1);
     font-weight: 600;
     letter-spacing: 0.4px;
     margin-bottom: 20px;
@@ -277,15 +276,11 @@
     max-width: 100%;
   }
 
-  /* ─── OVERVIEW TWO-COLUMN → SINGLE ─── */
+  /* ─── OVERVIEW → SINGLE COLUMN ─── */
   .overview-inner {
     display: flex;
     flex-direction: column;
     gap: 40px;
-  }
-
-  .pipeline-diagram {
-    gap: 0;
   }
 
   /* ─── ALL GRIDS → 1 COLUMN ─── */
@@ -330,19 +325,6 @@
     font-size: 14px;
   }
 
-  /* ─── STEP CONNECTORS ─── */
-  .step-connector-h {
-    display: none;
-  }
-
-  .step-connector-v {
-    width: 2px;
-    height: 32px;
-    margin: 0 auto;
-    background: linear-gradient(180deg, var(--sec-accent-1), transparent);
-    display: block;
-  }
-
   /* ─── TERMINAL BLOCK ─── */
   .terminal-block {
     font-size: 12px;
@@ -385,7 +367,7 @@
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 12px 16px;
+    gap: 8px 14px;
     padding: 0 20px;
   }
 
@@ -410,7 +392,7 @@
     gap: 24px;
     align-items: center;
     text-align: center;
-    padding: 0 20px;
+    padding: 40px 20px;
     margin-bottom: 24px;
   }
 
@@ -427,8 +409,8 @@
   }
 
   /* ─── HIDE DESKTOP-ONLY ELEMENTS ─── */
-  .custom-cursor,
-  .custom-cursor-ring {
+  .cursor-dot,
+  .cursor-ring {
     display: none !important;
   }
 
@@ -467,6 +449,18 @@
 
   .section-header.center {
     text-align: left;
+  }
+
+  /* ─── STATS FOOTNOTE ─── */
+  .stats-footnote {
+    font-size: 10px;
+    padding: 12px 20px 32px;
+    line-height: 1.5;
+  }
+
+  /* ─── DISABLE TILT ON MOBILE ─── */
+  .tilt-card {
+    transform: none !important;
   }
 }
 

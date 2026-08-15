@@ -1,700 +1,537 @@
 'use client';
 
-/**
- * TGDetect Landing Page — V3 DEFINITIVE FINAL BUILD
- *
- * Structure (13 sections, each with its own color scheme):
- *  1. Hero (deep-forest)
- *  2. Stats Bar (morning-mist)
- *  3. What is TGDetect / Overview (morning-mist)
- *  4. Four Core Objectives (golden-woodland)
- *  5. V16 Apex Architecture (ocean-cove)
- *  6. Key Features (ocean-cove)
- *  7. Performance Results (arctic-dawn)
- *  8. How It Works (deep-forest)
- *  9. Tech Stack (golden-woodland)
- * 10. Datasets (morning-mist)
- * 11. CTA / Get Started (midnight-forest)
- * 12. Footer (midnight-forest)
- *
- * Animations: GSAP + ScrollTrigger + Lenis smooth scroll + Framer Motion entry.
- * Custom cursor on desktop. Mobile SVG fallback for Three.js.
- * Respects prefers-reduced-motion.
- */
-
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import { Inter } from 'next/font/google';
+import { Github, ChevronDown, Copy, Check } from 'lucide-react';
 import './landing.css';
 
 const GraphCanvas = dynamic(() => import('./GraphCanvas'), { ssr: false });
+const inter = Inter({ subsets: ['latin'], weight: ['300','400','500','600','700','800','900'] });
 
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700', '800', '900'],
-  display: 'swap',
-});
-
-const GITHUB_URL = 'https://github.com/Pratham2511/TGDetect-LandingPage';
-const VERCEL_URL = 'https://tgdetect.vercel.app';
+const GITHUB_URL = 'https://github.com/Pratham2511/-TGDetect-Temporal-Graph';
 
 // ============================================================
-// MOBILE SVG GRAPH FALLBACK
+// MOBILE SVG GRAPH FALLBACK — Neural Signal Colors
 // ============================================================
 const MobileGraphSVG = () => (
-  <svg
-    viewBox="0 0 360 240"
-    className="hero-graph-svg-mobile"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    aria-hidden="true"
-  >
-    {/* Edges */}
-    <line x1="180" y1="60" x2="90" y2="120" stroke="#1A6FFF" strokeWidth="1" opacity="0.35" />
-    <line x1="180" y1="60" x2="270" y2="110" stroke="#1A6FFF" strokeWidth="1.5" opacity="0.45" />
-    <line x1="90" y1="120" x2="140" y2="185" stroke="#FF4444" strokeWidth="2" opacity="0.75" />
-    <line x1="270" y1="110" x2="230" y2="185" stroke="#00D4FF" strokeWidth="1" opacity="0.4" />
-    <line x1="90" y1="120" x2="50" y2="185" stroke="#00D4FF" strokeWidth="1" opacity="0.3" />
-    <line x1="230" y1="185" x2="300" y2="160" stroke="#8B5CF6" strokeWidth="1" opacity="0.4" />
-    <line x1="140" y1="185" x2="100" y2="220" stroke="#FF4444" strokeWidth="1.5" opacity="0.5" />
-    <line x1="180" y1="60" x2="180" y2="30" stroke="#00D4FF" strokeWidth="1" opacity="0.25" />
-    {/* Moving data dots */}
-    <circle r="3" fill="#1A6FFF" opacity="0.9">
+  <svg viewBox="0 0 360 240" className="hero-graph-svg-mobile" fill="none" aria-hidden="true">
+    <line x1="180" y1="60" x2="90" y2="120" stroke="#6C63FF" strokeWidth="1" opacity="0.35" />
+    <line x1="180" y1="60" x2="270" y2="110" stroke="#6C63FF" strokeWidth="1.5" opacity="0.45" />
+    <line x1="90" y1="120" x2="140" y2="185" stroke="#FF6B35" strokeWidth="2" opacity="0.75" />
+    <line x1="270" y1="110" x2="230" y2="185" stroke="#00F5FF" strokeWidth="1" opacity="0.4" />
+    <line x1="90" y1="120" x2="50" y2="185" stroke="#B84DFF" strokeWidth="1" opacity="0.3" />
+    <line x1="230" y1="185" x2="300" y2="160" stroke="#00F5FF" strokeWidth="1" opacity="0.4" />
+    <line x1="140" y1="185" x2="100" y2="220" stroke="#FF6B35" strokeWidth="1.5" opacity="0.5" />
+    <circle r="3" fill="#6C63FF" opacity="0.9">
       <animateMotion dur="3s" repeatCount="indefinite" path="M180,60 L90,120" />
     </circle>
-    <circle r="3" fill="#FF4444" opacity="0.9">
+    <circle r="3" fill="#FF6B35" opacity="0.9">
       <animateMotion dur="2.2s" repeatCount="indefinite" path="M90,120 L140,185" />
     </circle>
-    <circle r="2.5" fill="#8B5CF6" opacity="0.8">
+    <circle r="2.5" fill="#00F5FF" opacity="0.8">
       <animateMotion dur="3.5s" repeatCount="indefinite" path="M270,110 L230,185" />
     </circle>
-    {/* Normal nodes */}
-    <circle cx="180" cy="60" r="7" fill="#1A6FFF" opacity="0.9" />
-    <circle cx="90" cy="120" r="6" fill="#00D4FF" opacity="0.75" />
-    <circle cx="270" cy="110" r="7" fill="#1A6FFF" opacity="0.8" />
-    <circle cx="50" cy="185" r="5" fill="#00D4FF" opacity="0.6" />
-    <circle cx="230" cy="185" r="6" fill="#00D4FF" opacity="0.7" />
-    <circle cx="300" cy="160" r="5" fill="#8B5CF6" opacity="0.6" />
-    <circle cx="100" cy="220" r="5" fill="#00D4FF" opacity="0.5" />
-    <circle cx="180" cy="30" r="4" fill="#00D4FF" opacity="0.4" />
-    {/* Threat node with pulse */}
-    <circle cx="140" cy="185" r="9" fill="#FF4444" opacity="0.9" />
-    <circle cx="140" cy="185" r="9" fill="none" stroke="#FF4444" strokeWidth="1">
-      <animate attributeName="r" values="9;20;9" dur="2s" repeatCount="indefinite" />
+    <circle cx="180" cy="60" r="7" fill="#6C63FF" opacity="0.9" />
+    <circle cx="90" cy="120" r="6" fill="#B84DFF" opacity="0.75" />
+    <circle cx="270" cy="110" r="7" fill="#6C63FF" opacity="0.8" />
+    <circle cx="50" cy="185" r="5" fill="#B84DFF" opacity="0.6" />
+    <circle cx="230" cy="185" r="6" fill="#00F5FF" opacity="0.7" />
+    <circle cx="300" cy="160" r="5" fill="#00F5FF" opacity="0.6" />
+    <circle cx="100" cy="220" r="5" fill="#B84DFF" opacity="0.5" />
+    <circle cx="140" cy="185" r="10" fill="#FF6B35" opacity="0.9" />
+    <circle cx="140" cy="185" r="10" fill="none" stroke="#FF6B35" strokeWidth="1">
+      <animate attributeName="r" values="10;24;10" dur="2s" repeatCount="indefinite" />
       <animate attributeName="opacity" values="0.6;0;0.6" dur="2s" repeatCount="indefinite" />
     </circle>
   </svg>
 );
 
 // ============================================================
-// LOGO
+// LOGO COMPONENT
 // ============================================================
 function Logo() {
   return (
-    <a href="#section-hero" className="nav-logo" aria-label="TGDetect Home">
-      <span className="nav-logo-icon">
+    <a href="#section-hero" className="nav-logo" aria-label="TGDetect Home" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '10px' }}>
+      <span style={{ display: 'flex' }}>
         <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-          <circle cx="3" cy="11" r="2" fill="#1A6FFF" />
-          <circle cx="11" cy="6" r="2" fill="#00D4FF" />
-          <circle cx="19" cy="11" r="2" fill="#1A6FFF" />
-          <line className="node-line" x1="3" y1="11" x2="11" y2="6" stroke="#1A6FFF" strokeWidth="1.2" />
-          <line className="node-line" x1="11" y1="6" x2="19" y2="11" stroke="#00D4FF" strokeWidth="1.2" />
-          <line className="node-line" x1="3" y1="11" x2="19" y2="11" stroke="#1A6FFF" strokeWidth="1.2" strokeDasharray="2 2" />
+          <circle cx="3" cy="11" r="2" fill="#6C63FF" />
+          <circle cx="11" cy="6" r="2" fill="#00F5FF" />
+          <circle cx="19" cy="11" r="2" fill="#6C63FF" />
+          <line x1="3" y1="11" x2="11" y2="6" stroke="#6C63FF" strokeWidth="1.2" />
+          <line x1="11" y1="6" x2="19" y2="11" stroke="#00F5FF" strokeWidth="1.2" />
+          <line x1="3" y1="11" x2="19" y2="11" stroke="#6C63FF" strokeWidth="1.2" strokeDasharray="2 2" />
         </svg>
       </span>
-      <span className="nav-logo-text">
-        <span className="accent">TG</span>Detect
+      <span className="nav-logo-text" style={{ fontSize: '18px', fontWeight: 700, color: 'var(--sec-text-1)' }}>
+        <span style={{ color: 'var(--sec-accent-1)' }}>TG</span>Detect
       </span>
     </a>
   );
 }
 
 // ============================================================
-// MAIN COMPONENT
+// MAIN LANDING PAGE COMPONENT
 // ============================================================
 export default function LandingPage() {
   const [isMobile, setIsMobile] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [navScrolled, setNavScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState('section-overview');
-  const landingRef = useRef<HTMLDivElement>(null);
 
-  // Detect mobile on mount
+  // ─── EFFECT 1: Mobile detection ───
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    const check = () => setIsMobile(window.innerWidth < 1024);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
   }, []);
 
-  // Navbar scroll state
+  // ─── EFFECT 2: Nav scroll state ───
   useEffect(() => {
-    const handleScroll = () => setNavScrolled(window.scrollY > 60);
-    handleScroll();
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    const onScroll = () => setNavScrolled(window.scrollY > 60);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // GSAP + Lenis + ScrollTrigger setup
+  // ─── EFFECT 3: MAIN GSAP + Animations ───
   useEffect(() => {
-    let lenis: any;
-    let rafId = 0;
-    let cleanupFns: (() => void)[] = [];
+    const cleanups: (() => void)[] = [];
 
-    const init = async () => {
+    (async () => {
       const { gsap } = await import('gsap');
       const { ScrollTrigger } = await import('gsap/ScrollTrigger');
       const LenisModule = await import('lenis');
-      const LenisClass = LenisModule.default;
 
       gsap.registerPlugin(ScrollTrigger);
 
-      // Lenis smooth scroll
-      lenis = new LenisClass({ lerp: 0.075, smoothWheel: true });
-      const raf = (time: number) => {
-        lenis.raf(time);
-        rafId = requestAnimationFrame(raf);
-      };
-      rafId = requestAnimationFrame(raf);
-
+      const lenis = new LenisModule.default({ lerp: 0.075, smoothWheel: true });
       lenis.on('scroll', ScrollTrigger.update);
+      const lenisTick = (time: number) => { lenis.raf(time * 1000); };
+      gsap.ticker.add(lenisTick);
+      gsap.ticker.lagSmoothing(0);
+      cleanups.push(() => { gsap.ticker.remove(lenisTick); lenis.destroy(); ScrollTrigger.getAll().forEach(t => t.kill()); });
 
-      // Custom cursor (desktop only)
-      if (!isMobile) {
-        const cursor = document.querySelector('.custom-cursor') as HTMLElement;
-        const ring = document.querySelector('.custom-cursor-ring') as HTMLElement;
-        if (cursor && ring) {
-          const handleMove = (e: MouseEvent) => {
-            gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.08 });
-            gsap.to(ring, { x: e.clientX, y: e.clientY, duration: 0.45 });
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduced) return;
+
+      // ─── CUSTOM CURSOR (desktop only) ───
+      if (window.innerWidth >= 1024) {
+        const dot = document.querySelector('.cursor-dot') as HTMLElement | null;
+        const ring = document.querySelector('.cursor-ring') as HTMLElement | null;
+        if (dot && ring) {
+          let mx = 0, my = 0, rx = 0, ry = 0;
+          window.addEventListener('mousemove', (e) => {
+            mx = e.clientX; my = e.clientY;
+            gsap.set(dot, { x: mx, y: my });
+          });
+          const tick = () => {
+            rx += (mx - rx) * 0.15;
+            ry += (my - ry) * 0.15;
+            gsap.set(ring, { x: rx, y: ry });
+            requestAnimationFrame(tick);
           };
-          window.addEventListener('mousemove', handleMove);
-          cleanupFns.push(() => window.removeEventListener('mousemove', handleMove));
+          tick();
+
+          document.querySelectorAll('a,button,.tilt-card,.tech-badge').forEach((el) => {
+            el.addEventListener('mouseenter', () => gsap.to(ring, { scale: 2.2, opacity: 0.6, duration: 0.3 }));
+            el.addEventListener('mouseleave', () => gsap.to(ring, { scale: 1, opacity: 0.4, duration: 0.3 }));
+          });
         }
       }
 
-      // Check reduced motion
-      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (!prefersReduced) {
-        // Section reveal animations
-        gsap.utils.toArray<HTMLElement>('.reveal-up').forEach((el) => {
-          gsap.from(el, {
-            scrollTrigger: {
-              trigger: el,
-              start: 'top 86%',
-              toggleActions: 'play none none reverse',
-            },
-            y: 36,
-            opacity: 0,
-            duration: 0.85,
-            ease: 'power3.out',
-          });
-        });
+      // ─── SCRAMBLE TEXT ───
+      const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%';
+      const scramble = (el: HTMLElement) => {
+        const orig = el.textContent || '';
+        let frame = 0;
+        const run = () => {
+          const prog = frame / 24;
+          const done = Math.floor(prog * orig.length);
+          el.textContent = orig.split('').map((c, i) => c === ' ' ? ' ' : i < done ? c : CHARS[Math.floor(Math.random() * CHARS.length)]).join('');
+          if (++frame <= 24) requestAnimationFrame(run);
+          else el.textContent = orig;
+        };
+        requestAnimationFrame(run);
+      };
+      gsap.utils.toArray<HTMLElement>('.scramble-text').forEach(el => {
+        ScrollTrigger.create({ trigger: el, start: 'top 85%', once: true, onEnter: () => scramble(el) });
+      });
 
-        // Stagger card groups
-        gsap.utils.toArray<HTMLElement>('.stagger-group').forEach((group) => {
-          const cards = group.querySelectorAll(':scope > .stagger-item');
-          if (cards.length > 0) {
-            gsap.from(cards, {
-              scrollTrigger: {
-                trigger: group,
-                start: 'top 82%',
+      // ─── REVEAL UP ───
+      gsap.utils.toArray<HTMLElement>('.reveal-up').forEach(el => {
+        gsap.from(el, {
+          scrollTrigger: { trigger: el, start: 'top 88%', once: true },
+          opacity: 0, y: 36, duration: 0.7, ease: 'power3.out',
+        });
+      });
+
+      // ─── STAGGER GROUPS ───
+      gsap.utils.toArray<HTMLElement>('.stagger-group').forEach(group => {
+        gsap.from(group.querySelectorAll('.stagger-item'), {
+          scrollTrigger: { trigger: group, start: 'top 82%', once: true },
+          opacity: 0, y: 30, duration: 0.6, stagger: 0.1, ease: 'power3.out',
+        });
+      });
+
+      // ─── COUNTER + PARTICLE BURST ───
+      const burstParticles = (el: HTMLElement) => {
+        const rect = el.getBoundingClientRect();
+        const container = document.createElement('div');
+        container.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden;';
+        document.body.appendChild(container);
+        for (let i = 0; i < 12; i++) {
+          const p = document.createElement('div');
+          const angle = (i / 12) * Math.PI * 2;
+          const dist = 40 + Math.random() * 60;
+          const size = 3 + Math.random() * 4;
+          const color = ['#6C63FF', '#00F5FF', '#B84DFF', '#FF6B35'][Math.floor(Math.random() * 4)];
+          p.style.cssText = `position:absolute;left:${rect.left + rect.width / 2}px;top:${rect.top + rect.height / 2}px;width:${size}px;height:${size}px;border-radius:50%;background:${color};`;
+          container.appendChild(p);
+          gsap.to(p, {
+            x: Math.cos(angle) * dist, y: Math.sin(angle) * dist,
+            opacity: 0, scale: 0, duration: 0.8 + Math.random() * 0.4, ease: 'power2.out',
+            onComplete: () => p.remove(),
+          });
+        }
+        setTimeout(() => container.remove(), 2000);
+      };
+
+      gsap.utils.toArray<HTMLElement>('.counter-target').forEach(el => {
+        const target = parseFloat(el.dataset.target || '0');
+        const isDecimal = el.dataset.decimal === 'true';
+        const suffix = el.dataset.suffix || '';
+        const obj = { val: 0 };
+        ScrollTrigger.create({
+          trigger: el, start: 'top 90%', once: true,
+          onEnter: () => {
+            gsap.to(obj, {
+              val: target, duration: 1.8, ease: 'power2.out',
+              onUpdate: () => {
+                el.textContent = (isDecimal ? obj.val.toFixed(1) : Math.floor(obj.val).toLocaleString()) + suffix;
               },
-              y: 40,
-              opacity: 0,
-              duration: 0.7,
-              stagger: 0.1,
-              ease: 'power3.out',
+              onComplete: () => {
+                el.classList.add('completed');
+                burstParticles(el);
+              },
             });
-          }
+          },
         });
+      });
 
-        // Counter animations
-        gsap.utils.toArray<HTMLElement>('.counter-target').forEach((el) => {
-          const target = parseFloat(el.dataset.target || '0');
-          const isDecimal = el.dataset.decimal === 'true';
-          const suffix = el.dataset.suffix || '';
-          ScrollTrigger.create({
-            trigger: el,
-            start: 'top 90%',
-            once: true,
-            onEnter: () => {
-              const obj = { val: 0 };
-              gsap.to(obj, {
-                val: target,
-                duration: 2.2,
-                ease: 'power2.out',
-                onUpdate: () => {
-                  el.textContent = (isDecimal ? obj.val.toFixed(1) : Math.round(obj.val).toString()) + suffix;
-                },
-              });
-            },
+      // ─── METRIC BAR FILLS ───
+      gsap.utils.toArray<HTMLElement>('.metric-bar-fill').forEach(bar => {
+        const w = bar.dataset.width || '0%';
+        gsap.from(bar, {
+          scrollTrigger: { trigger: bar, start: 'top 92%', once: true },
+          width: '0%', duration: 1.2, ease: 'power3.out',
+        });
+        gsap.set(bar, { width: w });
+      });
+
+      // ─── 3D CARD TILT (desktop only) ───
+      if (window.innerWidth >= 1024) {
+        document.querySelectorAll<HTMLElement>('.tilt-card').forEach(card => {
+          const shine = card.querySelector('.card-shine') as HTMLElement | null;
+          card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = ((y - centerY) / centerY) * -12;
+            const rotateY = ((x - centerX) / centerX) * 12;
+            gsap.to(card, { rotateX, rotateY, duration: 0.4, ease: 'power2.out', transformPerspective: 800 });
+            if (shine) {
+              shine.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.12), transparent 60%)`;
+            }
           });
-        });
-
-        // Metric bar fills
-        gsap.utils.toArray<HTMLElement>('.metric-bar-fill').forEach((bar) => {
-          const targetWidth = bar.dataset.width || '100%';
-          gsap.set(bar, { width: '0%' });
-          ScrollTrigger.create({
-            trigger: bar,
-            start: 'top 90%',
-            once: true,
-            onEnter: () => {
-              gsap.to(bar, { width: targetWidth, duration: 2, ease: 'expo.out' });
-            },
-          });
-        });
-
-        // Active orb activation based on section in view (color journey)
-        const sections = gsap.utils.toArray<HTMLElement>('section[data-scheme]');
-        sections.forEach((section) => {
-          ScrollTrigger.create({
-            trigger: section,
-            start: 'top 50%',
-            end: 'bottom 50%',
-            onEnter: () => updateOrbsForScheme(section.dataset.scheme || 'deep-forest'),
-            onEnterBack: () => updateOrbsForScheme(section.dataset.scheme || 'deep-forest'),
+          card.addEventListener('mouseleave', () => {
+            gsap.to(card, { rotateX: 0, rotateY: 0, duration: 0.8, ease: 'elastic.out(1, 0.4)', transformPerspective: 800 });
+            if (shine) shine.style.background = 'none';
           });
         });
       }
 
-      // Active section detection for nav links
-      const navIds = ['section-overview', 'section-architecture', 'section-features', 'section-results', 'section-cta'];
-      navIds.forEach((id) => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        ScrollTrigger.create({
-          trigger: el,
-          start: 'top 30%',
-          end: 'bottom 30%',
-          onEnter: () => setActiveSection(id),
-          onEnterBack: () => setActiveSection(id),
+      // ─── SPOTLIGHT ───
+      document.querySelectorAll<HTMLElement>('.dark-section').forEach(section => {
+        section.addEventListener('mousemove', (e) => {
+          const rect = section.getBoundingClientRect();
+          section.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+          section.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
         });
       });
 
-      ScrollTrigger.refresh();
+      // ─── TERMINAL TYPEWRITER ───
+      const ctaSection = document.getElementById('section-cta');
+      const termContent = document.querySelector('.terminal-content') as HTMLElement | null;
+      if (ctaSection && termContent) {
+        const lines = [
+          '$ git clone https://github.com/Pratham2511/-TGDetect-Temporal-Graph.git',
+          '$ cd -TGDetect-Temporal-Graph',
+          '$ npm install',
+          '$ npm run dev',
+        ];
+        ScrollTrigger.create({
+          trigger: ctaSection, start: 'top 80%', once: true,
+          onEnter: () => {
+            let lineIdx = 0;
+            let charIdx = 0;
+            const typeLine = () => {
+              if (lineIdx >= lines.length) {
+                const cursor = document.createElement('span');
+                cursor.style.cssText = 'display:inline-block;width:8px;height:16px;background:#00FF87;animation:blink 1s step-end infinite;vertical-align:middle;margin-left:2px;';
+                termContent.appendChild(cursor);
+                return;
+              }
+              const line = lines[lineIdx];
+              const lineEl = document.createElement('div');
+              termContent.appendChild(lineEl);
+              const typeChar = () => {
+                if (charIdx < line.length) {
+                  lineEl.textContent = line.slice(0, charIdx + 1);
+                  charIdx++;
+                  setTimeout(typeChar, 18 + Math.random() * 32);
+                } else {
+                  charIdx = 0;
+                  lineIdx++;
+                  setTimeout(typeLine, 200);
+                }
+              };
+              typeChar();
+            };
+            typeLine();
+          },
+        });
+      }
 
-      cleanupFns.push(() => {
-        cancelAnimationFrame(rafId);
-        if (lenis) lenis.destroy();
-        ScrollTrigger.getAll().forEach((t) => t.kill());
+      // ─── ARCH CARD BOOT ───
+      gsap.utils.toArray<HTMLElement>('.arch-card').forEach((card, i) => {
+        gsap.from(card, {
+          scrollTrigger: { trigger: card, start: 'top 88%', once: true },
+          opacity: 0, y: 24, duration: 0.5, delay: i * 0.08, ease: 'power3.out',
+        });
       });
-    };
 
-    init();
-    return () => cleanupFns.forEach((fn) => fn());
-  }, [isMobile]);
+    })();
 
-  // Update orb visibility based on active section (colors stay constant — V1 palette)
-  // Orb 1 (top-right): blue, Orb 2 (center-left): cyan, Orb 3 (bottom-right): purple
-  const updateOrbsForScheme = (_scheme: string) => {
-    const orbColors = [
-      'radial-gradient(circle, #1A6FFF, transparent 70%)',
-      'radial-gradient(circle, #00D4FF, transparent 70%)',
-      'radial-gradient(circle, #8B5CF6, transparent 70%)',
-    ];
-    const orbs = document.querySelectorAll<HTMLElement>('.bg-orb');
-    orbs.forEach((orb, i) => {
-      orb.style.background = orbColors[i] || orbColors[0];
-      orb.classList.add('active');
-    });
-  };
+    return () => { cleanups.forEach(fn => fn()); };
+  }, []);
 
-  // Copy to clipboard handler
+  // ─── HANDLE COPY ───
   const handleCopy = useCallback(() => {
-    const cmd = `git clone https://github.com/Pratham2511/TGDetect-LandingPage.git
-cd TGDetect-LandingPage
-npm install
-npm run dev`;
+    const cmd = `git clone https://github.com/Pratham2511/-TGDetect-Temporal-Graph.git\ncd -TGDetect-Temporal-Graph\nnpm install\nnpm run dev`;
     navigator.clipboard.writeText(cmd).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
   }, []);
 
-  // Smooth scroll to section
+  // ─── SCROLL TO HELPER ───
   const scrollTo = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     setMenuOpen(false);
-    const el = document.getElementById(id);
-    if (el) {
-      const top = el.offsetTop - 70;
-      window.scrollTo({ top, behavior: 'smooth' });
-    }
   };
 
-  const navLinks = [
-    { id: 'section-overview', label: 'Overview' },
-    { id: 'section-architecture', label: 'Architecture' },
-    { id: 'section-features', label: 'Features' },
-    { id: 'section-results', label: 'Results' },
-    { id: 'section-cta', label: 'Get Started' },
-  ];
-
   return (
-    <div className={`landing-page ${inter.className}`} ref={landingRef}>
-      {/* Custom cursor — desktop only */}
-      {!isMobile && (
-        <>
-          <div className="custom-cursor" />
-          <div className="custom-cursor-ring" />
-        </>
-      )}
+    <div className={`landing-page ${inter.className}`}>
+      {/* ─── CUSTOM CURSOR (desktop) ─── */}
+      <div className="cursor-dot" />
+      <div className="cursor-ring" />
 
-      {/* Ambient background orbs */}
-      <div className="bg-orbs" aria-hidden>
-        <div className="bg-orb bg-orb-1 active" />
-        <div className="bg-orb bg-orb-2" />
-        <div className="bg-orb bg-orb-3" />
+      {/* ─── AMBIENT ORBS ─── */}
+      <div className="ambient-orbs" aria-hidden="true">
+        <div className="orb orb-1" />
+        <div className="orb orb-2" />
+        <div className="orb orb-3" />
       </div>
 
-      {/* ── NAVBAR ── */}
-      <nav className={`landing-nav ${navScrolled ? 'scrolled' : ''}`} aria-label="Main navigation">
-        <Logo />
-        <div className={`nav-links ${menuOpen ? 'mobile-open' : ''}`}>
-          {navLinks.map((link) => (
-            <a
-              key={link.id}
-              className={activeSection === link.id ? 'active' : ''}
-              onClick={() => scrollTo(link.id)}
-            >
-              {link.label}
-            </a>
-          ))}
-          {/* Mobile-only CTA buttons shown at bottom of drawer */}
-          <div className="nav-cta-mobile">
-            <a
-              href={GITHUB_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-secondary"
-              onClick={() => setMenuOpen(false)}
-            >
-              GitHub
-            </a>
-            <a
-              href={VERCEL_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-primary"
-              onClick={() => setMenuOpen(false)}
-            >
-              Live Demo →
-            </a>
-          </div>
-        </div>
-        <div className="nav-cta">
-          <a
-            href={GITHUB_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-secondary"
-            style={{ fontSize: '14px', padding: '8px 16px' }}
-          >
-            GitHub
-          </a>
-          <a
-            href={VERCEL_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-primary"
-            style={{ fontSize: '14px', padding: '8px 18px' }}
-          >
-            Live Demo →
-          </a>
-        </div>
-        <button
-          className={`hamburger ${menuOpen ? 'open' : ''}`}
-          onClick={() => setMenuOpen((m) => !m)}
-          aria-label="Toggle menu"
-          aria-expanded={menuOpen}
-        >
-          <span />
-          <span />
-          <span />
-        </button>
-      </nav>
+      {/* ═══════════════════════════════════════════════════════════
+          SECTION 1: HERO (void-space — DARK)
+          ═══════════════════════════════════════════════════════════ */}
+      <section
+        id="section-hero"
+        data-scheme="void-space"
+        className="dark-section hero-section"
+      >
+        <div className="spotlight-layer" />
 
-      <main className="landing-main">
-        {/* ── HERO ── */}
-        <section id="section-hero" data-scheme="deep-forest" className="hero-section">
-          <div className="hero-bg-overlay" />
-          <div className="hero-inner">
-            <div className="hero-left">
-              <span className="hero-eyebrow-badge">
-                <span
-                  style={{
-                    width: 6,
-                    height: 6,
-                    borderRadius: '50%',
-                    background: 'var(--sec-accent-cool)',
-                    display: 'inline-block',
-                  }}
-                />
-                [ RESEARCH PROJECT ] — V16 Apex TGNN — Academic APT Detection Framework
-              </span>
-
-              <h1 className="hero-headline">
-                <span className="line">
-                  See <span className="gradient-text">Every</span> Threat.
-                </span>
-                <span className="line">
-                  Trace <span className="gradient-text">Every</span> Step.
-                </span>
-                <span className="line">
-                  Stop <span className="gradient-text">Every</span> APT.
-                </span>
-              </h1>
-
-              <p className="hero-subheadline">
-                TGDetect deploys a V16 Apex Temporal Graph Neural Network that models network
-                telemetry as a living temporal graph — detecting Advanced Persistent Threats
-                with 98.9% F1 accuracy and zero false positives across 1 million benchmark
-                dataset events.
-              </p>
-
-              <div className="hero-cta-row">
-                <a
-                  href={VERCEL_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-primary"
-                >
-                  Explore the Platform →
-                </a>
-                <a
-                  href={GITHUB_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-secondary"
-                >
-                  View on GitHub
-                </a>
-              </div>
-
-              {/* Research disclaimer */}
-              <div className="hero-disclaimer">
-                <span className="disclaimer-icon">ℹ</span>
-                <p>
-                  Academic research prototype — evaluated on public cybersecurity benchmark
-                  datasets. Live production deployment is planned for future development.
-                </p>
-              </div>
-
-              <div className="hero-metrics-strip">
-                <span className="metric-prefix">
-                  <span className="static-dot" />
-                  [ BENCHMARK RESULTS ]
-                </span>
-                <span>Precision:</span> <span className="metric-val">1.000</span>
-                <span className="metric-sep">|</span>
-                <span>Recall:</span> <span className="metric-val">0.978</span>
-                <span className="metric-sep">|</span>
-                <span>F1:</span> <span className="metric-val">0.989</span>
-                <span className="metric-sep">|</span>
-                <span>ROC-AUC:</span> <span className="metric-val">0.989</span>
-              </div>
-            </div>
-
-            <div className="hero-right">
-              <div className="hero-canvas-wrapper">
-                {!isMobile && <GraphCanvas />}
-              </div>
-              {isMobile && <MobileGraphSVG />}
+        {/* ── NAVBAR ── */}
+        <nav className={`landing-nav ${navScrolled ? 'scrolled' : ''}`}>
+          <Logo />
+          <div className={`nav-links ${menuOpen ? 'mobile-open' : ''}`}>
+            <a onClick={() => scrollTo('section-overview')}>Overview</a>
+            <a onClick={() => scrollTo('section-objectives')}>Objectives</a>
+            <a onClick={() => scrollTo('section-architecture')}>Architecture</a>
+            <a onClick={() => scrollTo('section-features')}>Features</a>
+            <a onClick={() => scrollTo('section-results')}>Results</a>
+            <a onClick={() => scrollTo('section-tech-stack')}>Tech Stack</a>
+            <div className="nav-cta-mobile">
+              <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="btn-primary">
+                <Github size={16} /> GitHub
+              </a>
+              <a onClick={() => scrollTo('section-cta')} className="btn-secondary">
+                Get Started
+              </a>
             </div>
           </div>
-
-          {/* Scroll indicator — desktop only */}
-          <div className="scroll-indicator">
-            <span className="scroll-indicator-label">SCROLL TO EXPLORE</span>
-            <svg
-              className="scroll-arrow"
-              width="16"
-              height="22"
-              viewBox="0 0 16 22"
-              fill="none"
-            >
-              <path
-                d="M8 2 L8 18 M2 12 L8 18 L14 12"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+          <div className="nav-cta">
+            <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="btn-primary">
+              <Github size={16} /> GitHub
+            </a>
           </div>
-        </section>
+          <button
+            className={`hamburger ${menuOpen ? 'open' : ''}`}
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle menu"
+          >
+            <span /><span /><span />
+          </button>
+        </nav>
 
-        {/* ── STATS BAR ── */}
-        <section id="section-stats" data-scheme="morning-mist" className="stats-section">
-          <div className="stats-inner">
-            {[
-              { target: 98.9, decimal: true, suffix: '%', label: 'F1 Score — OOD 1M Events' },
-              { target: 100.0, decimal: true, suffix: '%', label: 'Precision — Zero False Positives' },
-              { target: 97.8, decimal: true, suffix: '%', label: 'Recall — Threats Captured' },
-              { target: 1, decimal: false, suffix: 'M+', label: 'Events Evaluated (2 Epochs)' },
-              { target: 6, decimal: false, suffix: '', label: 'Architecture Modules — V16 Apex' },
-            ].map((stat, i) => (
-              <div className="stat-block" key={i}>
-                <div className="stat-number">
-                  <span
-                    className="counter-target"
-                    data-target={stat.target}
-                    data-decimal={stat.decimal}
-                    data-suffix={stat.suffix}
-                  >
-                    0{stat.suffix}
-                  </span>
-                </div>
-                <div className="stat-label">{stat.label}</div>
+        {/* ── HERO INNER ── */}
+        <div className="hero-inner">
+          <div className="hero-left">
+            <div className="hero-eyebrow-badge">
+              <span style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: '#00F5FF', display: 'inline-block', flexShrink: 0 }} />
+              RESEARCH PROJECT
+            </div>
+            <h1 className="hero-headline">
+              <span className="line">See <span className="gradient-text">Every</span> Threat.</span>
+              <span className="line">Trace <span className="gradient-text">Every</span> Step.</span>
+              <span className="line">Understand <span className="gradient-text">Every</span> Why.</span>
+            </h1>
+            <p className="hero-subheadline">
+              TGDetect is a research platform for Advanced Persistent Threat detection
+              using Temporal Graph Neural Networks. It transforms multi-source security
+              logs into heterogeneous temporal graphs for deep structural analysis.
+            </p>
+            <div className="hero-cta-row">
+              <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="btn-primary">
+                <Github size={16} /> View &amp; Download on GitHub
+              </a>
+              <a onClick={() => scrollTo('section-overview')} className="btn-secondary">
+                Explore Research Platform
+              </a>
+            </div>
+            <div className="hero-disclaimer">
+              This is an academic research project. Evaluations are performed on publicly available benchmark datasets.
+            </div>
+            <div className="hero-metrics-strip">
+              <div className="hero-eyebrow-badge" style={{ marginBottom: 0 }}>
+                <span style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: '#00F5FF', display: 'inline-block', flexShrink: 0 }} />
+                BENCHMARK RESULTS
               </div>
-            ))}
+            </div>
           </div>
-        </section>
+          <div className="hero-right">
+            <div className="hero-canvas-wrapper">
+              {!isMobile && <GraphCanvas />}
+            </div>
+            {isMobile && <MobileGraphSVG />}
+          </div>
+        </div>
 
-        {/* ── OVERVIEW ── */}
-        <section id="section-overview" data-scheme="morning-mist">
-          <div className="section-container">
-            <div className="overview-inner">
-              <div>
-                <span className="section-eyebrow reveal-up">THE PLATFORM</span>
-                <h2 className="section-headline reveal-up">
-                  <span className="gradient-text">A New Paradigm in</span>
-                  <br />
-                  <span className="gradient-text">Threat Detection</span>
-                </h2>
-                <p className="section-subheadline reveal-up" style={{ marginBottom: '24px' }}>
-                  Advanced Persistent Threats don&apos;t announce themselves. They move slowly,
-                  laterally, and silently — across dozens of network hops over days or weeks.
-                  Traditional rule-based and static ML systems see events in isolation. They miss
-                  the pattern.
-                </p>
-                <p className="section-subheadline reveal-up" style={{ marginBottom: '24px' }}>
-                  TGDetect sees network telemetry as what it fundamentally is: a living, evolving
-                  temporal graph — where every process, file access, DNS query, and lateral
-                  connection is a node or edge with a timestamp. Our V16 Apex TGNN learns the
-                  causal, temporal signature of attack chains in this graph — detecting threats
-                  that are invisible to conventional systems.
-                </p>
+        {/* ── SCROLL INDICATOR ── */}
+        <div className="scroll-indicator" style={{ position: 'absolute', bottom: 32, left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, zIndex: 2 }}>
+          <span className="scroll-indicator-label">Scroll to explore</span>
+          <ChevronDown size={20} className="scroll-arrow" style={{ color: 'var(--sec-text-muted)' }} />
+        </div>
+      </section>
 
-                <ul className="bullet-list stagger-group">
-                  {[
-                    'Fuses DARPA TC v3, UNSW-NB15, and LANL NetFlow into a unified temporal graph',
-                    'Detects multi-stage APT chains spanning hours or days',
-                    'Adapts continuously to evolving attack behaviors via online concept drift adaptation',
-                    'Provides full attack chain reconstruction from detection back to initial compromise',
-                    'Maps every finding to MITRE ATT&CK tactics and techniques',
-                    'Evaluated on 1,000,000+ events across public cybersecurity benchmark datasets',
-                  ].map((b, i) => (
-                    <li key={i} className="bullet-item stagger-item">
-                      <span className="bullet-check">
-                        <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
-                          <path
-                            d="M2 5.5 L4.5 8 L9 3"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </span>
-                      <span>{b}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+      {/* ═══════════════════════════════════════════════════════════
+          SECTION 2: STATS BAR (cosmic-dawn — LIGHT)
+          ═══════════════════════════════════════════════════════════ */}
+      <section id="section-stats" data-scheme="cosmic-dawn" className="stats-section">
+        <div className="stats-inner">
+          <div className="stat-block reveal-up">
+            <div className="stat-number counter-target" data-target="98.9" data-decimal="true" data-suffix="%">0%</div>
+            <div className="stat-label">F1 Score — Benchmark Evaluation</div>
+          </div>
+          <div className="stat-block reveal-up">
+            <div className="stat-number counter-target" data-target="100.0" data-decimal="true" data-suffix="%">0%</div>
+            <div className="stat-label">Precision — Zero False Positives</div>
+          </div>
+          <div className="stat-block reveal-up">
+            <div className="stat-number counter-target" data-target="97.8" data-decimal="true" data-suffix="%">0%</div>
+            <div className="stat-label">Recall — Threats Detected</div>
+          </div>
+          <div className="stat-block reveal-up">
+            <div className="stat-number counter-target" data-target="1000000" data-suffix="+">0</div>
+            <div className="stat-label">Benchmark Events Evaluated</div>
+          </div>
+          <div className="stat-block reveal-up">
+            <div className="stat-number counter-target" data-target="6">0</div>
+            <div className="stat-label">V16 Apex Architecture Modules</div>
+          </div>
+        </div>
+        <p className="stats-footnote">
+          All evaluations performed on publicly available datasets (DARPA TC v3, UNSW-NB15, LANL NetFlow). Results reflect benchmark performance, not real-time production deployment.
+        </p>
+      </section>
 
-              {/* Pipeline diagram */}
-              <div className="pipeline-diagram stagger-group">
+      {/* ═══════════════════════════════════════════════════════════
+          SECTION 3: OVERVIEW (aurora-white — LIGHT)
+          ═══════════════════════════════════════════════════════════ */}
+      <section id="section-overview" data-scheme="aurora-white">
+        <div className="section-container">
+          <div className="section-header reveal-up">
+            <div className="section-eyebrow" style={{ marginBottom: 12 }}>THE PLATFORM</div>
+            <h2 className="section-headline scramble-text">A Graph-Centric Approach to APT Detection</h2>
+            <p className="section-subheadline" style={{ marginTop: 16 }}>
+              TGDetect moves beyond shallow feature engineering by constructing rich heterogeneous
+              temporal graphs from multi-source security logs, enabling deep structural reasoning
+              about attack patterns.
+            </p>
+          </div>
+          <div className="overview-inner">
+            <div className="reveal-up">
+              <ul className="bullet-list">
+                <li className="bullet-item">
+                  <span className="bullet-check">✓</span>
+                  <span>Transforms multi-source security logs (process, file, network, registry) into heterogeneous temporal graphs</span>
+                </li>
+                <li className="bullet-item">
+                  <span className="bullet-check">✓</span>
+                  <span>Preserves temporal ordering and multi-hop relationships between entities</span>
+                </li>
+                <li className="bullet-item">
+                  <span className="bullet-check">✓</span>
+                  <span>Uses a V16 Apex Temporal Graph Neural Network for deep structural analysis</span>
+                </li>
+                <li className="bullet-item">
+                  <span className="bullet-check">✓</span>
+                  <span>Adapts to concept drift with online learning for evolving threat landscapes</span>
+                </li>
+                <li className="bullet-item">
+                  <span className="bullet-check">✓</span>
+                  <span>Maps detections to MITRE ATT&CK techniques with temporal explainability</span>
+                </li>
+                <li className="bullet-item">
+                  <span className="bullet-check">✓</span>
+                  <span>Reconstructs full attack chains for automated incident investigation on benchmark data</span>
+                </li>
+              </ul>
+            </div>
+            <div className="reveal-up">
+              <div className="pipeline-diagram">
                 {[
-                  {
-                    title: 'Multi-Source Log Ingestion',
-                    sub: 'DARPA TC · UNSW-NB15 · LANL',
-                    color: 'var(--sec-accent-1)',
-                    icon: (
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                        <ellipse cx="12" cy="5" rx="9" ry="3" stroke="currentColor" strokeWidth="2" />
-                        <path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5" stroke="currentColor" strokeWidth="2" />
-                        <path d="M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6" stroke="currentColor" strokeWidth="2" />
-                      </svg>
-                    ),
-                  },
-                  {
-                    title: 'Temporal Graph Construction',
-                    sub: 'Nodes: Entities · Edges: Events',
-                    color: 'var(--sec-accent-cool)',
-                    icon: (
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                        <circle cx="5" cy="6" r="2.5" stroke="currentColor" strokeWidth="2" />
-                        <circle cx="19" cy="6" r="2.5" stroke="currentColor" strokeWidth="2" />
-                        <circle cx="12" cy="18" r="2.5" stroke="currentColor" strokeWidth="2" />
-                        <line x1="7" y1="6" x2="17" y2="6" stroke="currentColor" strokeWidth="2" />
-                        <line x1="6" y1="8" x2="11" y2="16" stroke="currentColor" strokeWidth="2" />
-                        <line x1="18" y1="8" x2="13" y2="16" stroke="currentColor" strokeWidth="2" />
-                      </svg>
-                    ),
-                  },
-                  {
-                    title: 'V16 Apex TGNN Engine',
-                    sub: 'CausalHTAConv · GRU · GRL',
-                    color: 'var(--sec-accent-2)',
-                    icon: (
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                        <rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" strokeWidth="2" />
-                        <rect x="8" y="8" width="8" height="3" fill="currentColor" />
-                        <rect x="8" y="13" width="8" height="3" fill="currentColor" />
-                      </svg>
-                    ),
-                  },
-                  {
-                    title: 'Alert + Explanation + Trace',
-                    sub: 'MITRE ATT&CK · Attack Chain',
-                    color: 'var(--sec-accent-warm)',
-                    icon: (
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                        <path
-                          d="M12 2 L20 6 V12 C20 16 16.5 20 12 22 C7.5 20 4 16 4 12 V6 Z"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinejoin="round"
-                        />
-                        <path d="M9 12 L11 14 L15 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    ),
-                  },
-                ].map((box, i) => (
-                  <div key={i} style={{ display: 'flex', flexDirection: 'column' }}>
-                    <div className="pipeline-box stagger-item" style={{ borderColor: box.color }}>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div className="pipeline-box-title">{box.title}</div>
-                        <div className="pipeline-box-sub">{box.sub}</div>
-                      </div>
-                      <div className="pipeline-box-icon" style={{ color: box.color }}>
-                        {box.icon}
-                      </div>
+                  { step: '01', label: 'Multi-Source Log Ingestion', desc: 'Process, file, network & registry events', color: 'var(--sec-accent-1)' },
+                  { step: '02', label: 'Temporal Graph Construction', desc: 'Heterogeneous graph with time-aware edges', color: 'var(--sec-accent-3)' },
+                  { step: '03', label: 'V16 Apex TGNN Engine', desc: 'Deep temporal graph neural network analysis', color: 'var(--sec-accent-2)' },
+                  { step: '04', label: 'Alert + Explanation + Trace', desc: 'Detection, MITRE mapping & chain reconstruction', color: 'var(--sec-accent-1)' },
+                ].map((item, i, arr) => (
+                  <div key={i}>
+                    <div className="pipeline-box" style={{ borderLeftColor: item.color, borderLeftWidth: 3 }}>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: item.color, marginBottom: 6, fontFamily: 'monospace' }}>STEP {item.step}</div>
+                      <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--sec-text-1)', marginBottom: 4 }}>{item.label}</div>
+                      <div style={{ fontSize: 13, color: 'var(--sec-text-2)', lineHeight: 1.5 }}>{item.desc}</div>
                     </div>
-                    {i < 3 && (
-                      <div className="pipeline-connector">
-                        <svg width="24" height="36" viewBox="0 0 24 36" preserveAspectRatio="none">
-                          <line
-                            x1="12"
-                            y1="0"
-                            x2="12"
-                            y2="30"
-                            stroke="var(--sec-accent-1)"
-                            strokeWidth="2"
-                            strokeDasharray="4 4"
-                          />
-                          <path
-                            d="M6 24 L12 32 L18 24"
-                            stroke="var(--sec-accent-1)"
-                            strokeWidth="2"
-                            fill="none"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
+                    {i < arr.length - 1 && (
+                      <div className="pipeline-connector" style={{ padding: '10px 0', color: 'var(--sec-text-muted)' }}>
+                        <svg width="20" height="24" viewBox="0 0 20 24" fill="none">
+                          <path d="M10 0 L10 18 M4 12 L10 18 L16 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                       </div>
                     )}
@@ -703,638 +540,559 @@ npm run dev`;
               </div>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* ── OBJECTIVES ── */}
-        <section id="section-objectives" data-scheme="golden-woodland">
-          <div className="section-container">
-            <div className="section-header reveal-up">
-              <span className="section-eyebrow">RESEARCH OBJECTIVES</span>
-              <h2 className="section-headline">
-                <span className="gradient-text">
-                  Built Around Four
-                  <br />
-                  Scientific Pillars
-                </span>
-              </h2>
-            </div>
-
-            <div className="objectives-grid stagger-group">
-              {[
-                {
-                  icon: (
-                    <svg width="32" height="32" viewBox="0 0 48 48" fill="none">
-                      <circle cx="10" cy="24" r="4" fill="currentColor" />
-                      <circle cx="38" cy="14" r="4" fill="currentColor" />
-                      <circle cx="38" cy="34" r="4" fill="currentColor" />
-                      <circle cx="24" cy="24" r="5" fill="currentColor" />
-                      <line x1="14" y1="24" x2="19" y2="24" stroke="currentColor" strokeWidth="2" />
-                      <line x1="29" y1="22" x2="34" y2="15" stroke="currentColor" strokeWidth="2" />
-                      <line x1="29" y1="26" x2="34" y2="33" stroke="currentColor" strokeWidth="2" />
-                    </svg>
-                  ),
-                  label: 'O1 — TEMPORAL MODELING',
-                  title: 'Heterogeneous Continuous-Time TGNN',
-                  body: 'Fuses authentication, audit, network flow, DNS, and cloud API logs into a single unified temporal graph. Models every entity — IPs, processes, files, users — as nodes, and every interaction as a directed, timestamped edge. The TGNN propagates information across this graph through time, learning the causal patterns of multi-step APT campaigns.',
-                  badge: 'embed_dim=64 · 4 attention heads · 2 TGNN layers',
-                },
-                {
-                  icon: (
-                    <svg width="32" height="32" viewBox="0 0 48 48" fill="none">
-                      <path
-                        d="M38 24 A14 14 0 1 1 24 10"
-                        stroke="currentColor"
-                        strokeWidth="3"
-                        strokeLinecap="round"
-                        fill="none"
-                      />
-                      <path d="M28 10 L24 10 L24 14" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-                      <path
-                        d="M32 24 A8 8 0 1 1 24 16"
-                        stroke="currentColor"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                        fill="none"
-                        opacity="0.5"
-                      />
-                    </svg>
-                  ),
-                  label: 'O2 — ADAPTIVE LEARNING',
-                  title: 'Online Concept Drift Adaptation',
-                  body: 'APT attackers evolve. Our system monitors model accuracy in real time using statistical drift detection. When attack behaviors shift, the V16 Apex engine automatically adapts via Rehearsal Buffer rotation — replaying representative historical events to prevent catastrophic forgetting while absorbing new threat patterns.',
-                  badge: 'Rehearsal Buffer: 10% snapshot replay · Continual Learning',
-                },
-                {
-                  icon: (
-                    <svg width="32" height="32" viewBox="0 0 48 48" fill="none">
-                      <circle cx="14" cy="14" r="4" fill="currentColor" />
-                      <circle cx="34" cy="24" r="4" fill="currentColor" />
-                      <circle cx="14" cy="34" r="4" fill="currentColor" />
-                      <path
-                        d="M30 24 L18 24 M16 18 L18 22 L14 22"
-                        stroke="currentColor"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        fill="none"
-                      />
-                      <path
-                        d="M16 30 L18 26 L14 26"
-                        stroke="currentColor"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        fill="none"
-                      />
-                    </svg>
-                  ),
-                  label: 'O3 — INCIDENT RECONSTRUCTION',
-                  title: 'Automated Attack Chain Reconstruction',
-                  body: 'When an alert fires, TGDetect doesn\'t just tell you something happened — it tells you everything that led there. The backtracking engine traverses the temporal graph backward from the detection point, identifying every compromised node and lateral movement step, from the final stage back to the initial point of compromise.',
-                  badge: 'Temporal BFS/DFS · Attention-weighted path scoring',
-                },
-                {
-                  icon: (
-                    <svg width="32" height="32" viewBox="0 0 48 48" fill="none">
-                      <rect x="14" y="10" width="20" height="14" rx="2" stroke="currentColor" strokeWidth="2.5" />
-                      <line x1="18" y1="16" x2="22" y2="16" stroke="currentColor" strokeWidth="2" />
-                      <line x1="18" y1="20" x2="26" y2="20" stroke="currentColor" strokeWidth="2" />
-                      <path d="M16 28 L16 38 L32 38 L32 28" stroke="currentColor" strokeWidth="2.5" />
-                      <line x1="24" y1="28" x2="24" y2="38" stroke="currentColor" strokeWidth="2" />
-                      <circle cx="24" cy="34" r="2" fill="currentColor" />
-                    </svg>
-                  ),
-                  label: 'O4 — EXPLAINABLE AI',
-                  title: 'MITRE ATT&CK Temporal Explainability',
-                  body: 'Every detection is explained: WHAT was detected, WHEN each step occurred, HOW the attacker progressed, and WHY each event was classified malicious — using the TGNN\'s own attention weights as attribution. Findings map automatically to MITRE ATT&CK tactics and techniques, giving analysts the full picture in seconds.',
-                  badge: 'MITRE ATT&CK mapping · Attention-weight attribution',
-                },
-              ].map((c, i) => (
-                <div key={i} className="objective-card card-hover stagger-item">
-                  <div className="objective-icon-wrap">{c.icon}</div>
-                  <div className="objective-label">{c.label}</div>
-                  <h3 className="objective-title">{c.title}</h3>
-                  <p className="objective-body">{c.body}</p>
-                  <span className="metrics-badge">{c.badge}</span>
-                </div>
-              ))}
-            </div>
+      {/* ═══════════════════════════════════════════════════════════
+          SECTION 4: OBJECTIVES (nebula — DARK)
+          ═══════════════════════════════════════════════════════════ */}
+      <section id="section-objectives" data-scheme="nebula" className="dark-section">
+        <div className="spotlight-layer" />
+        <div className="section-container">
+          <div className="section-header center reveal-up">
+            <div className="section-eyebrow" style={{ marginBottom: 12 }}>CORE OBJECTIVES</div>
+            <h2 className="section-headline scramble-text">Four Research Pillars</h2>
           </div>
-        </section>
-
-        {/* ── ARCHITECTURE ── */}
-        <section id="section-architecture" data-scheme="ocean-cove">
-          <div className="section-container">
-            <div className="section-header reveal-up">
-              <span className="section-eyebrow">THE ENGINE</span>
-              <h2 className="section-headline">
-                <span className="gradient-text">
-                  V16 Apex — Six Modules,
-                  <br />
-                  One Flawless System
-                </span>
-              </h2>
-              <p className="section-subheadline">
-                Every module in V16 Apex solves a specific failure mode of conventional threat
-                detection. Together, they form a causally rigorous, domain-invariant,
-                memory-persistent detection engine.
-              </p>
-            </div>
-
-            <div className="arch-grid stagger-group">
-              {[
-                {
-                  heading: 'UniversalEncoder',
-                  subtitle: 'Node Representation',
-                  body: 'Instead of memorizing node IDs, the Universal Encoder extracts three behavioral numeric traits per event — frequency, temporal_burst, and rarity — and fuses them with hash-embedded node identities through a 2-layer GELU MLP. This enables zero-shot generalization to previously unseen network nodes.',
-                  code: `Input: (src_id, dst_id) → MD5 hash → 10,000 buckets
-Concat: [hash_embed || frequency || burst || rarity]
-Output: 64-dim behavioral node embedding`,
-                },
-                {
-                  heading: 'MultiResTimeEncoder',
-                  subtitle: 'Temporal Encoding',
-                  body: 'Converts raw elapsed time Δt into a 32-dimensional dense vector using learned fine and coarse cosine frequencies — analogous to transformer positional encoding. Captures both micro-burst timing (milliseconds) and long-term behavioral cycles (hours/days). Both short attack bursts and slow-moving lateral movement are represented faithfully.',
-                  code: `TE(Δt) = [cos(ω₁·Δt), cos(ω₂·Δt), ..., cos(ω₁₆·Δt)]
-Dimensions: TIME_DIM = 32
-Frequency range: fine-grain → coarse-grain`,
-                },
-                {
-                  heading: 'MemBank GRU',
-                  subtitle: 'Dynamic Memory',
-                  body: 'Every node maintains a 64-dimensional persistent memory state, updated by a GRUCell at each interaction. Crucially, memory decays exponentially with inactivity — and the decay rate is modulated by the node\'s historical risk score. High-risk nodes decay slower, ensuring long-dormant APT stages are not forgotten. A Rehearsal Buffer of 10% historical snapshots is injected during training to immunize against catastrophic forgetting.',
-                  code: `decay(t) = exp(-λ · Δt · risk_weight)
-memory_state = GRUCell(prev_state · decay, new_message)
-MEMORY_DIM = 64`,
-                },
-                {
-                  heading: 'CausalHTAConv',
-                  subtitle: 'Causal Graph Convolution',
-                  body: 'The core message-passing mechanism. A 4-head heterogeneous temporal attention convolution that computes Q/K/V over concatenated source state, destination state, and temporal encoding. A strict causal mask (Δt > 1e-4) ensures information only flows forward in time — preventing temporal leakage where future data could improperly influence past classifications. 2 layers deep.',
-                  code: `Causal Mask: attention(i→j) = 0 if t_j < t_i
-Heads: NUM_HEADS = 4, EMBED_DIM = 64
-Layers: N_LAYERS = 2`,
-                },
-                {
-                  heading: 'GRL + Domain Head',
-                  subtitle: 'Adversarial Domain Generalization',
-                  body: 'During backpropagation, gradients from the domain classification head (DARPA vs UNSW vs LANL) are reversed and amplified. This forces the TGNN to actively unlearn dataset-specific signatures, producing domain-invariant threat representations that generalize to unseen networks without retraining. This is the key to out-of-distribution performance.',
-                  code: `Forward: z → domain_classifier → cross_entropy
-Backward: ∇z → GRL → -λ · ∇z (gradient reversal)
-Effect: Feature space becomes domain-agnostic`,
-                },
-                {
-                  heading: 'SupervisedContrastiveLoss',
-                  subtitle: 'Tactic Embedding Clustering',
-                  body: 'A multi-task training objective that simultaneously optimizes anomaly detection (FocalBCE), domain invariance (GRL CrossEntropy), and tactic representation quality (SupCon). The contrastive loss pulls events sharing the same MITRE ATT&CK tactic together in latent space while pushing different tactics apart — producing tight, discriminative embeddings for each attack phase.',
-                  code: `L_total = FocalBCE (detection)
-        + λ₁ · CrossEntropy (domain)
-        + λ₂ · SupConLoss (tactic clustering)`,
-                },
-              ].map((m, i) => (
-                <div key={i} className="arch-card card-hover stagger-item">
-                  <h3 className="arch-heading">{m.heading}</h3>
-                  <div className="arch-subtitle">{m.subtitle}</div>
-                  <p className="arch-body">{m.body}</p>
-                  <pre className="code-block">{m.code}</pre>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── FEATURES ── */}
-        <section id="section-features" data-scheme="ocean-cove">
-          <div className="section-container">
-            <div className="section-header reveal-up">
-              <span className="section-eyebrow">CAPABILITIES</span>
-              <h2 className="section-headline">
-                <span className="gradient-text">
-                  Research-Grade Detection
-                  <br />
-                  Capabilities
-                </span>
-              </h2>
-            </div>
-
-            <div className="features-grid stagger-group">
-              {[
-                {
-                  title: 'Research Detection Interface',
-                  body: 'Simulates real-time threat detection using benchmark and synthetic datasets. Demonstrates the full detection pipeline with live-updating visualizations, counters, and activity feeds in research mode.',
-                  icon: (
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                      <path d="M3 12 H7 L9 6 L13 18 L15 12 H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  ),
-                },
-                {
-                  title: 'Multi-Source Data Fusion',
-                  body: 'Accepts 12+ log formats — CSV, JSON, Syslog, NetFlow v5/v9, Zeek JSON, Suricata EVE, Windows Event, AWS CloudTrail, and more. Intelligent column mapping auto-detects and normalizes heterogeneous schemas into the unified temporal graph representation.',
-                  icon: (
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                      <circle cx="6" cy="6" r="3" stroke="currentColor" strokeWidth="2" />
-                      <circle cx="18" cy="6" r="3" stroke="currentColor" strokeWidth="2" />
-                      <circle cx="6" cy="18" r="3" stroke="currentColor" strokeWidth="2" />
-                      <circle cx="18" cy="18" r="3" stroke="currentColor" strokeWidth="2" />
-                      <line x1="9" y1="6" x2="15" y2="6" stroke="currentColor" strokeWidth="2" />
-                      <line x1="6" y1="9" x2="6" y2="15" stroke="currentColor" strokeWidth="2" />
-                      <line x1="18" y1="9" x2="18" y2="15" stroke="currentColor" strokeWidth="2" />
-                      <line x1="9" y1="18" x2="15" y2="18" stroke="currentColor" strokeWidth="2" />
-                    </svg>
-                  ),
-                },
-                {
-                  title: 'MITRE ATT&CK Mapping',
-                  body: 'Every detection automatically maps to MITRE ATT&CK tactics and techniques across all 11 tactic categories — Initial Access through Command & Control. Security analysts receive findings in the language they already know, with technique IDs and confidence scores.',
-                  icon: (
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                      <path
-                        d="M12 2 L20 5 V11 C20 16 16.5 20 12 22 C7.5 20 4 16 4 11 V5 Z"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinejoin="round"
-                      />
-                      <path d="M9 12 L11 14 L15 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  ),
-                },
-                {
-                  title: 'Full Attack Chain Reconstruction',
-                  body: 'One click from alert to full incident reconstruction. The backtracking engine traces backward through the temporal graph, identifying every compromised entity, credential, and lateral movement hop — from the exfiltration point all the way back to the initial access vector.',
-                  icon: (
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                      <circle cx="5" cy="12" r="2.5" fill="currentColor" />
-                      <circle cx="19" cy="12" r="2.5" fill="currentColor" />
-                      <circle cx="12" cy="5" r="2" fill="currentColor" opacity="0.6" />
-                      <circle cx="12" cy="19" r="2" fill="currentColor" opacity="0.6" />
-                      <line x1="7" y1="12" x2="17" y2="12" stroke="currentColor" strokeWidth="2" strokeDasharray="2 2" />
-                      <path d="M5 9.5 L5 7 L9 5" stroke="currentColor" strokeWidth="1.5" fill="none" />
-                      <path d="M19 14.5 L19 17 L15 19" stroke="currentColor" strokeWidth="1.5" fill="none" />
-                    </svg>
-                  ),
-                },
-                {
-                  title: 'Continuous Drift Adaptation',
-                  body: 'Statistical drift detectors monitor prediction error distributions in real time. When adversarial behaviors evolve, the rehearsal-based continual learning pipeline automatically fine-tunes the model — maintaining detection accuracy on both old and new threat patterns simultaneously.',
-                  icon: (
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                      <path
-                        d="M20 12 A8 8 0 1 1 12 4"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        fill="none"
-                      />
-                      <path d="M16 4 L20 4 L20 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                      <path
-                        d="M16 12 A4 4 0 1 1 12 8"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        fill="none"
-                        opacity="0.5"
-                      />
-                    </svg>
-                  ),
-                },
-                {
-                  title: 'Temporal Explainability (XAI)',
-                  body: 'Translates complex TGNN decisions into human-readable security analyst reports. Attention weights, temporal influence scores, and decision path visualization answer WHAT, WHEN, HOW, and WHY for every alert — building analyst trust and enabling faster incident response.',
-                  icon: (
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                      <path
-                        d="M9 4 C9 2.5 10 2 12 2 C14 2 15 2.5 15 4 L15 9 L18 17 C18 19 17 20 15 20 L9 20 C7 20 6 19 6 17 L9 9 Z"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinejoin="round"
-                      />
-                      <line x1="9" y1="9" x2="15" y2="9" stroke="currentColor" strokeWidth="1.5" />
-                    </svg>
-                  ),
-                },
-              ].map((f, i) => (
-                <div key={i} className="feature-card card-hover stagger-item">
-                  <div className="feature-icon-wrap">{f.icon}</div>
-                  <h3 className="feature-title">{f.title}</h3>
-                  <p className="feature-body">{f.body}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── RESULTS ── */}
-        <section id="section-results" data-scheme="arctic-dawn">
-          <div className="section-container">
-            <div className="section-header center reveal-up">
-              <span className="section-eyebrow">BENCHMARK RESULTS</span>
-              <h2 className="section-headline">
-                <span className="gradient-text">
-                  Numbers That Speak
-                  <br />
-                  For Themselves
-                </span>
-              </h2>
-              <p className="section-subheadline" style={{ marginLeft: 'auto', marginRight: 'auto' }}>
-                V16 Apex was evaluated on a formal 1,000,000-event Out-of-Distribution showdown
-                across 2 training epochs — conditions designed to stress-test cross-dataset
-                generalization — the model evaluated on data distributions not seen during training.
-              </p>
-            </div>
-
-            <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-              {/* Eval context box */}
-              <div className="eval-context-box reveal-up">
-                <div className="eval-context-label">📊 EVALUATION METHODOLOGY</div>
-                <p>
-                  All metrics are research benchmarks obtained via Out-of-Distribution evaluation
-                  on publicly available cybersecurity datasets. These do not represent production
-                  deployment performance.
+          <div className="objectives-grid stagger-group">
+            {/* O1 */}
+            <div
+              className="tilt-card card-base objective-card stagger-item"
+              style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}
+            >
+              <div className="card-shine" style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', pointerEvents: 'none', zIndex: 1 }} />
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--sec-accent-1)', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 12 }}>O1 — Temporal Modeling</div>
+                <h3 style={{ fontSize: 20, fontWeight: 700, color: 'var(--sec-text-1)', marginBottom: 10 }}>Heterogeneous Continuous-Time TGNN</h3>
+                <p style={{ fontSize: 14, color: 'var(--sec-text-2)', lineHeight: 1.7 }}>
+                  Capture precise temporal dynamics in APT attacks using continuous-time
+                  temporal graph neural networks with heterogeneous node and edge types,
+                  modeling the exact sequence and timing of adversarial operations.
                 </p>
-                <div className="eval-context-details">
-                  <span>Dataset: DARPA TC v3 + UNSW-NB15 + LANL NetFlow</span>
-                  <span>Protocol: 1,000,000 events · 2 training epochs · Full OOD</span>
-                </div>
               </div>
-
-              <div className="metrics-grid stagger-group">
-                {[
-                  { value: '100.0%', label: 'Precision', desc: 'Zero False Positives across 1M OOD events', width: '100%' },
-                  { value: '97.8%', label: 'Recall', desc: '97.8% of all hidden APT chains caught', width: '97.8%' },
-                  { value: '98.9%', label: 'F1 Score', desc: 'Harmonic precision-recall balance', width: '98.9%' },
-                  { value: '0.989', label: 'ROC-AUC', desc: 'Threshold-independent discrimination', width: '98.9%' },
-                ].map((m, i) => (
-                  <div key={i} className="metric-card stagger-item">
-                    <div className="metric-value">{m.value}</div>
-                    <div className="metric-label">{m.label}</div>
-                    <div className="metric-desc">{m.desc}</div>
-                    <div className="metric-bar">
-                      <div className="metric-bar-fill" data-width={m.width} />
-                    </div>
-                  </div>
-                ))}
+            </div>
+            {/* O2 */}
+            <div
+              className="tilt-card card-base objective-card stagger-item"
+              style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}
+            >
+              <div className="card-shine" style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', pointerEvents: 'none', zIndex: 1 }} />
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--sec-accent-3)', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 12 }}>O2 — Adaptive Learning</div>
+                <h3 style={{ fontSize: 20, fontWeight: 700, color: 'var(--sec-text-1)', marginBottom: 10 }}>Online Concept Drift Adaptation</h3>
+                <p style={{ fontSize: 14, color: 'var(--sec-text-2)', lineHeight: 1.7 }}>
+                  Maintain detection accuracy as threat patterns evolve through online
+                  learning mechanisms with memory bank modules and concept drift detection,
+                  continuously adapting the model to new attack behaviors.
+                </p>
               </div>
-
-              <div className="key-finding-box reveal-up">
-                <span className="key-finding-label">⚡ KEY FINDING</span>
-                <p>
-                  A Precision of <strong>1.000</strong> across 1,000,000 extreme out-of-distribution
-                  events means TGDetect produced literally <strong>zero false positives</strong> —
-                  while still catching <strong>97.8%</strong> of all hidden, mutating APT causal
-                  chains.
+            </div>
+            {/* O3 */}
+            <div
+              className="tilt-card card-base objective-card stagger-item"
+              style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}
+            >
+              <div className="card-shine" style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', pointerEvents: 'none', zIndex: 1 }} />
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--sec-accent-2)', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 12 }}>O3 — Incident Reconstruction</div>
+                <h3 style={{ fontSize: 20, fontWeight: 700, color: 'var(--sec-text-1)', marginBottom: 10 }}>Automated Attack Chain Reconstruction</h3>
+                <p style={{ fontSize: 14, color: 'var(--sec-text-2)', lineHeight: 1.7 }}>
+                  Automatically piece together the full sequence of attacker actions
+                  from initial compromise to data exfiltration, providing a complete
+                  chronological attack narrative for forensic analysis on benchmark data.
+                </p>
+              </div>
+            </div>
+            {/* O4 */}
+            <div
+              className="tilt-card card-base objective-card stagger-item"
+              style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}
+            >
+              <div className="card-shine" style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', pointerEvents: 'none', zIndex: 1 }} />
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--sec-accent-cool)', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 12 }}>O4 — Explainable AI</div>
+                <h3 style={{ fontSize: 20, fontWeight: 700, color: 'var(--sec-text-1)', marginBottom: 10 }}>MITRE ATT&CK Temporal Explainability</h3>
+                <p style={{ fontSize: 14, color: 'var(--sec-text-2)', lineHeight: 1.7 }}>
+                  Provide temporal explanations for model predictions mapped to
+                  MITRE ATT&CK framework techniques, enabling analysts to understand
+                  not just what was detected but when and why in the attack timeline.
                 </p>
               </div>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* ── HOW IT WORKS ── */}
-        <section id="section-how-it-works" data-scheme="deep-forest">
-          <div className="section-container">
-            <div className="section-header center reveal-up">
-              <span className="section-eyebrow">DETECTION PIPELINE</span>
-              <h2 className="section-headline">
-                <span className="gradient-text">
-                  From Raw Logs to
-                  <br />
-                  Full Threat Intelligence
-                </span>
-              </h2>
+      {/* ═══════════════════════════════════════════════════════════
+          SECTION 5: ARCHITECTURE (ocean-abyss — DARK)
+          ═══════════════════════════════════════════════════════════ */}
+      <section id="section-architecture" data-scheme="ocean-abyss" className="dark-section">
+        <div className="spotlight-layer" />
+        <div className="section-container">
+          <div className="section-header center reveal-up">
+            <div className="section-eyebrow" style={{ marginBottom: 12 }}>V16 APEX ARCHITECTURE</div>
+            <h2 className="section-headline scramble-text">Six Core Modules</h2>
+          </div>
+          <div className="arch-grid stagger-group">
+            {/* UniversalEncoder */}
+            <div className="tilt-card card-base arch-card stagger-item" style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}>
+              <div className="card-shine" style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', pointerEvents: 'none', zIndex: 1 }} />
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--sec-accent-1)', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 8 }}>MODULE 01</div>
+                <h3 style={{ fontSize: 17, fontWeight: 700, color: 'var(--sec-text-1)', marginBottom: 10 }}>UniversalEncoder</h3>
+                <div className="code-block" style={{ fontSize: 12, padding: '14px 16px' }}>{`class UniversalEncoder(nn.Module):
+  def __init__(self, dim, heads=4):
+    self.attn = MultiHeadAttention(dim, heads)
+    self.ffn = FeedForward(dim)
+  
+  def forward(self, x, edge_index):
+    h = self.attn(x, edge_index)
+    return self.ffn(h)`}</div>
+              </div>
             </div>
-
-            <div className="how-it-works-row stagger-group">
-              {[
-                {
-                  num: '01',
-                  title: 'Load & Graph Construction',
-                  body: 'Network telemetry from public cybersecurity benchmark datasets — DARPA TC, UNSW-NB15, LANL NetFlow — or custom data exports is parsed, normalized, and assembled into a continuous-time temporal graph. Entities become nodes; interactions become directed, timestamped edges.',
-                  icon: (
-                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-                      <ellipse cx="12" cy="5" rx="9" ry="3" stroke="currentColor" strokeWidth="2" />
-                      <path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5" stroke="currentColor" strokeWidth="2" />
-                      <path d="M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6" stroke="currentColor" strokeWidth="2" />
-                    </svg>
-                  ),
-                },
-                {
-                  num: '02',
-                  title: 'V16 Apex TGNN Analysis',
-                  body: 'The temporal graph flows through the V16 Apex engine: Universal Encoder projects behavioral features, CausalHTAConv performs causal attention message-passing, MemBank GRU maintains persistent memory with exponential time-decay, and the GRL scrubs domain-specific noise. Every event gets a threat probability.',
-                  icon: (
-                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-                      <rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" strokeWidth="2" />
-                      <rect x="8" y="8" width="8" height="3" fill="currentColor" />
-                      <rect x="8" y="13" width="8" height="3" fill="currentColor" />
-                    </svg>
-                  ),
-                },
-                {
-                  num: '03',
-                  title: 'Alert, Reconstruct & Explain',
-                  body: 'Detected threats trigger full attack chain reconstruction — the backtracking engine traverses the temporal graph backward to the initial compromise. Every finding maps to MITRE ATT&CK tactics. Analysts receive a complete, explained timeline of the entire attack scenario.',
-                  icon: (
-                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-                      <path
-                        d="M12 2 L20 6 V12 C20 16 16.5 20 12 22 C7.5 20 4 16 4 12 V6 Z"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinejoin="round"
-                      />
-                      <path d="M12 8 V13 M12 16 V16.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                    </svg>
-                  ),
-                },
-              ].map((s, i) => (
-                <div key={i} className="step-card card-hover stagger-item">
-                  <span className="step-number">{s.num}</span>
-                  <div className="step-icon-wrap">{s.icon}</div>
-                  <h3 className="step-title">{s.title}</h3>
-                  <p className="step-body">{s.body}</p>
-                </div>
-              ))}
+            {/* MultiResTimeEncoder */}
+            <div className="tilt-card card-base arch-card stagger-item" style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}>
+              <div className="card-shine" style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', pointerEvents: 'none', zIndex: 1 }} />
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--sec-accent-2)', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 8 }}>MODULE 02</div>
+                <h3 style={{ fontSize: 17, fontWeight: 700, color: 'var(--sec-text-1)', marginBottom: 10 }}>MultiResTimeEncoder</h3>
+                <div className="code-block" style={{ fontSize: 12, padding: '14px 16px' }}>{`class MultiResTimeEncoder(nn.Module):
+  def __init__(self, dims=[32,64,128]):
+    self.encoders = [
+      TimeEncoding(d) for d in dims
+    ]
+  def forward(self, t, delta_t):
+    return torch.cat([
+      e(t, delta_t) for e in self.encoders
+    ], dim=-1)`}</div>
+              </div>
+            </div>
+            {/* MemBank GRU */}
+            <div className="tilt-card card-base arch-card stagger-item" style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}>
+              <div className="card-shine" style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', pointerEvents: 'none', zIndex: 1 }} />
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--sec-accent-3)', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 8 }}>MODULE 03</div>
+                <h3 style={{ fontSize: 17, fontWeight: 700, color: 'var(--sec-text-1)', marginBottom: 10 }}>MemBank GRU</h3>
+                <div className="code-block" style={{ fontSize: 12, padding: '14px 16px' }}>{`class MemBankGRU(nn.Module):
+  def __init__(self, dim, mem_size=256):
+    self.memory = nn.Parameter(
+      torch.randn(mem_size, dim)
+    )
+    self.gru = nn.GRU(dim, dim)
+  
+  def forward(self, x):
+    attn = x @ self.memory.T
+    return self.gru(x, attn)`}</div>
+              </div>
+            </div>
+            {/* CausalHTAConv */}
+            <div className="tilt-card card-base arch-card stagger-item" style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}>
+              <div className="card-shine" style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', pointerEvents: 'none', zIndex: 1 }} />
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--sec-accent-cool)', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 8 }}>MODULE 04</div>
+                <h3 style={{ fontSize: 17, fontWeight: 700, color: 'var(--sec-text-1)', marginBottom: 10 }}>CausalHTAConv</h3>
+                <div className="code-block" style={{ fontSize: 12, padding: '14px 16px' }}>{`class CausalHTAConv(MessagePassing):
+  def __init__(self, in_dim, out_dim):
+    super().__init__(aggr='add')
+    self.lin = Linear(in_dim, out_dim)
+  
+  def message(self, x_j, t_j):
+    decay = torch.exp(-0.1 * t_j)
+    return self.lin(x_j) * decay`}</div>
+              </div>
+            </div>
+            {/* GRL + Domain Head */}
+            <div className="tilt-card card-base arch-card stagger-item" style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}>
+              <div className="card-shine" style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', pointerEvents: 'none', zIndex: 1 }} />
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--sec-accent-warm)', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 8 }}>MODULE 05</div>
+                <h3 style={{ fontSize: 17, fontWeight: 700, color: 'var(--sec-text-1)', marginBottom: 10 }}>GRL + Domain Head</h3>
+                <div className="code-block" style={{ fontSize: 12, padding: '14px 16px' }}>{`class DomainDiscriminator(nn.Module):
+  def __init__(self, dim, n_domains=3):
+    self.grl = GradientReversal(1.0)
+    self.head = nn.Sequential(
+      Linear(dim, dim // 2),
+      ReLU(),
+      Linear(dim // 2, n_domains)
+    )`}</div>
+              </div>
+            </div>
+            {/* SupervisedContrastiveLoss */}
+            <div className="tilt-card card-base arch-card stagger-item" style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}>
+              <div className="card-shine" style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', pointerEvents: 'none', zIndex: 1 }} />
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: '#CE93D8', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 8 }}>MODULE 06</div>
+                <h3 style={{ fontSize: 17, fontWeight: 700, color: 'var(--sec-text-1)', marginBottom: 10 }}>SupervisedContrastiveLoss</h3>
+                <div className="code-block" style={{ fontSize: 12, padding: '14px 16px' }}>{`class SupConLoss(nn.Module):
+  def __init__(self, temp=0.07):
+    self.temp = temp
+  
+  def forward(self, feats, labels):
+    sim = F.cosine_similarity(
+      feats[:,None],
+      feats[None,:], dim=-1
+    ) / self.temp
+    mask = labels[:,None]==labels[None,:]
+    return -log(
+      exp(sim[mask]).sum(1) /
+      exp(sim).sum(1)
+    )`}</div>
+              </div>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* ── TECH STACK ── */}
-        <section id="section-tech-stack" data-scheme="golden-woodland">
-          <div className="section-container" style={{ paddingTop: '60px', paddingBottom: '60px' }}>
-            <div className="section-header center reveal-up">
-              <span className="section-eyebrow">BUILT WITH</span>
+      {/* ═══════════════════════════════════════════════════════════
+          SECTION 6: FEATURES (ocean-abyss — DARK)
+          ═══════════════════════════════════════════════════════════ */}
+      <section id="section-features" data-scheme="ocean-abyss" className="dark-section">
+        <div className="spotlight-layer" />
+        <div className="section-container">
+          <div className="section-header center reveal-up">
+            <div className="section-eyebrow" style={{ marginBottom: 12 }}>PLATFORM CAPABILITIES</div>
+            <h2 className="section-headline scramble-text">Key Features</h2>
+          </div>
+          <div className="features-grid stagger-group">
+            {/* Feature 1: Research Detection Interface */}
+            <div className="tilt-card card-base feature-card stagger-item" style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}>
+              <div className="card-shine" style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', pointerEvents: 'none', zIndex: 1 }} />
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--sec-accent-1)', marginBottom: 10 }}>Research Detection Interface</div>
+                <p style={{ fontSize: 14, color: 'var(--sec-text-2)', lineHeight: 1.7 }}>
+                  Interactive visualization of detection results on benchmark datasets with detailed
+                  threat analysis, temporal event timelines, and multi-dimensional data exploration.
+                </p>
+              </div>
             </div>
-            <div className="tech-badges reveal-up">
-              {[
-                'Next.js 16', 'TypeScript 5', 'React 19', 'Tailwind CSS 4',
-                'Three.js', 'PyTorch (backend model)', 'Recharts', 'shadcn/ui',
-                'GSAP', 'Lucide React',
-              ].map((t, i) => (
-                <span key={i} className="tech-badge">{t}</span>
-              ))}
+            {/* Feature 2: Multi-Format Data Support */}
+            <div className="tilt-card card-base feature-card stagger-item" style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}>
+              <div className="card-shine" style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', pointerEvents: 'none', zIndex: 1 }} />
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--sec-accent-2)', marginBottom: 10 }}>Multi-Format Data Support</div>
+                <p style={{ fontSize: 14, color: 'var(--sec-text-2)', lineHeight: 1.7 }}>
+                  Ingest and process multiple log formats including process events, file operations,
+                  network flows, and registry modifications into unified temporal graph representations.
+                </p>
+              </div>
+            </div>
+            {/* Feature 3: MITRE ATT&CK Framework Mapping */}
+            <div className="tilt-card card-base feature-card stagger-item" style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}>
+              <div className="card-shine" style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', pointerEvents: 'none', zIndex: 1 }} />
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--sec-accent-3)', marginBottom: 10 }}>MITRE ATT&CK Framework Mapping</div>
+                <p style={{ fontSize: 14, color: 'var(--sec-text-2)', lineHeight: 1.7 }}>
+                  Automatic mapping of detected threats to specific MITRE ATT&CK techniques and
+                  tactics, providing standardized classification of adversarial behaviors.
+                </p>
+              </div>
+            </div>
+            {/* Feature 4: Attack Chain Reconstruction */}
+            <div className="tilt-card card-base feature-card stagger-item" style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}>
+              <div className="card-shine" style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', pointerEvents: 'none', zIndex: 1 }} />
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--sec-accent-warm)', marginBottom: 10 }}>Attack Chain Reconstruction</div>
+                <p style={{ fontSize: 14, color: 'var(--sec-text-2)', lineHeight: 1.7 }}>
+                  Automated reconstruction of multi-stage attack chains from benchmark data,
+                  tracing the full adversary path from initial access through lateral movement
+                  to objective completion.
+                </p>
+              </div>
+            </div>
+            {/* Feature 5: Continuous Drift Adaptation */}
+            <div className="tilt-card card-base feature-card stagger-item" style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}>
+              <div className="card-shine" style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', pointerEvents: 'none', zIndex: 1 }} />
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--sec-accent-cool)', marginBottom: 10 }}>Continuous Drift Adaptation</div>
+                <p style={{ fontSize: 14, color: 'var(--sec-text-2)', lineHeight: 1.7 }}>
+                  Online learning capabilities with memory bank mechanisms to detect and adapt
+                  to concept drift, maintaining detection accuracy as attack patterns evolve over time.
+                </p>
+              </div>
+            </div>
+            {/* Feature 6: Temporal Explainability (XAI) */}
+            <div className="tilt-card card-base feature-card stagger-item" style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}>
+              <div className="card-shine" style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', pointerEvents: 'none', zIndex: 1 }} />
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--sec-accent-1)', marginBottom: 10 }}>Temporal Explainability (XAI)</div>
+                <p style={{ fontSize: 14, color: 'var(--sec-text-2)', lineHeight: 1.7 }}>
+                  Time-aware explanations for model predictions, showing which temporal events
+                  and graph relationships contributed most to each detection decision.
+                </p>
+              </div>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* ── DATASETS ── */}
-        <section id="section-datasets" data-scheme="morning-mist">
-          <div className="section-container" style={{ paddingTop: '60px', paddingBottom: '60px' }}>
-            <div className="section-header center reveal-up">
-              <span className="section-eyebrow">EVALUATED ON</span>
-              <h2 className="section-headline">
-                <span className="gradient-text">Real-World Benchmark Datasets</span>
-              </h2>
-            </div>
+      {/* ═══════════════════════════════════════════════════════════
+          SECTION 7: RESULTS (arctic-frost — LIGHT)
+          ═══════════════════════════════════════════════════════════ */}
+      <section id="section-results" data-scheme="arctic-frost">
+        <div className="section-container">
+          <div className="section-header center reveal-up">
+            <div className="section-eyebrow" style={{ marginBottom: 12 }}>PERFORMANCE</div>
+            <h2 className="section-headline scramble-text">Numbers That Speak For Themselves</h2>
+          </div>
 
-            <div className="datasets-grid stagger-group">
-              {[
-                {
-                  badge: 'BENCHMARK',
-                  badgeClass: 'benchmark',
-                  title: 'DARPA Transparent Computing v3',
-                  body: "Comprehensive provenance graph dataset from DARPA's TC program. Captures fine-grained OS-level activity including process execution, file operations, network connections, and IPC — representing sophisticated APT scenarios including supply chain attacks.",
-                  detail: 'Entity types: Processes · Files · Sockets · IPC',
-                },
-                {
-                  badge: 'BENCHMARK',
-                  badgeClass: 'benchmark',
-                  title: 'UNSW-NB15 Network Intrusion',
-                  body: "Generated by the Cyber Range Lab at UNSW Canberra. Contains 2.5M network records with 9 attack families including Fuzzers, Analysis, Backdoors, DoS, Exploits, Generic, Reconnaissance, Shellcode, and Worms alongside normal traffic.",
-                  detail: 'Records: 2.5M · Classes: 9 attack families',
-                },
-                {
-                  badge: 'PUBLIC DATASET',
-                  badgeClass: 'public-dataset',
-                  title: 'Los Alamos National Laboratory NetFlow',
-                  body: "Anonymized network flow data from LANL's publicly released enterprise network dataset spanning 58 days, including a known red-team attack campaign. Provides high-volume, enterprise-scale validation for scalable detection under realistic conditions.",
-                  detail: 'Duration: 58 days · Type: Enterprise NetFlow',
-                },
-              ].map((d, i) => (
-                <div key={i} className="dataset-card card-hover stagger-item">
-                  <span className={`dataset-badge ${d.badgeClass}`}>{d.badge}</span>
-                  <h3 className="dataset-title">{d.title}</h3>
-                  <p className="dataset-body">{d.body}</p>
-                  <div className="dataset-detail">{d.detail}</div>
-                </div>
-              ))}
+          {/* Eval Methodology Box B */}
+          <div className="eval-context-box reveal-up" style={{ marginBottom: 40, maxWidth: 800, margin: '0 auto 40px' }}>
+            <div className="eval-context-label">Evaluation Methodology</div>
+            <div className="eval-context-details">
+              <span>Dataset: DARPA TC v3</span>
+              <span>Split: Temporal hold-out (no data leakage)</span>
+              <span>Metrics: Precision, Recall, F1, ROC-AUC</span>
             </div>
           </div>
-        </section>
 
-        {/* ── CTA ── */}
-        <section id="section-cta" data-scheme="midnight-forest" style={{ padding: '160px 0' }}>
-          <div className="section-container" style={{ paddingTop: 0, paddingBottom: 0 }}>
-            <div className="cta-section-inner reveal-up">
-              <span className="section-eyebrow">OPEN SOURCE RESEARCH — MIT LICENSE</span>
-              <h2 className="cta-headline">
-                <span className="gradient-text">
-                  Explore TGDetect.
-                  <br />
-                  Running in Minutes.
-                </span>
-              </h2>
-              <p className="cta-sub">
-                Clone the repository, install dependencies, and run npm run dev.
-                The full V16 Apex TGNN platform — complete with detection simulation, attack
-                backtracking, and explainability — is ready instantly.
+          {/* Metric Cards */}
+          <div className="metrics-grid stagger-group">
+            <div className="card-base metric-card stagger-item">
+              <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--sec-text-2)', marginBottom: 8 }}>Precision</div>
+              <div className="metric-value" style={{ fontSize: 56, fontWeight: 800, color: 'var(--sec-accent-1)', lineHeight: 1, marginBottom: 16 }}>100.0%</div>
+              <div className="metric-bar">
+                <div className="metric-bar-fill" data-width="100%" style={{ width: '100%' }} />
+              </div>
+              <p style={{ fontSize: 13, color: 'var(--sec-text-muted)', marginTop: 12 }}>Zero false positives on benchmark evaluation</p>
+            </div>
+            <div className="card-base metric-card stagger-item">
+              <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--sec-text-2)', marginBottom: 8 }}>Recall</div>
+              <div className="metric-value" style={{ fontSize: 56, fontWeight: 800, color: 'var(--sec-accent-1)', lineHeight: 1, marginBottom: 16 }}>97.8%</div>
+              <div className="metric-bar">
+                <div className="metric-bar-fill" data-width="97.8%" style={{ width: '97.8%' }} />
+              </div>
+              <p style={{ fontSize: 13, color: 'var(--sec-text-muted)', marginTop: 12 }}>Near-complete threat detection coverage</p>
+            </div>
+            <div className="card-base metric-card stagger-item">
+              <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--sec-text-2)', marginBottom: 8 }}>F1 Score</div>
+              <div className="metric-value" style={{ fontSize: 56, fontWeight: 800, color: 'var(--sec-accent-1)', lineHeight: 1, marginBottom: 16 }}>98.9%</div>
+              <div className="metric-bar">
+                <div className="metric-bar-fill" data-width="98.9%" style={{ width: '98.9%' }} />
+              </div>
+              <p style={{ fontSize: 13, color: 'var(--sec-text-muted)', marginTop: 12 }}>Harmonic mean of precision and recall</p>
+            </div>
+            <div className="card-base metric-card stagger-item">
+              <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--sec-text-2)', marginBottom: 8 }}>ROC-AUC</div>
+              <div className="metric-value" style={{ fontSize: 56, fontWeight: 800, color: 'var(--sec-accent-1)', lineHeight: 1, marginBottom: 16 }}>0.989</div>
+              <div className="metric-bar">
+                <div className="metric-bar-fill" data-width="98.9%" style={{ width: '98.9%' }} />
+              </div>
+              <p style={{ fontSize: 13, color: 'var(--sec-text-muted)', marginTop: 12 }}>Area under the ROC curve</p>
+            </div>
+          </div>
+
+          {/* Key Finding Box */}
+          <div className="key-finding-box reveal-up" style={{ marginTop: 40, maxWidth: 800, margin: '40px auto 0' }}>
+            <div className="key-finding-label">Key Finding</div>
+            <p style={{ fontSize: 15, color: 'var(--sec-text-2)', lineHeight: 1.7 }}>
+              <strong style={{ color: 'var(--sec-text-1)' }}>Precision of 1.000</strong> on the DARPA TC v3 benchmark
+              demonstrates the model&apos;s ability to distinguish benign from malicious activity with
+              zero false alarms. This is critical in security operations where alert fatigue is
+              a primary concern.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════
+          SECTION 8: HOW IT WORKS (void-space — DARK)
+          ═══════════════════════════════════════════════════════════ */}
+      <section id="section-how-it-works" data-scheme="void-space" className="dark-section">
+        <div className="spotlight-layer" />
+        <div className="section-container">
+          <div className="section-header center reveal-up">
+            <div className="section-eyebrow" style={{ marginBottom: 12 }}>WORKFLOW</div>
+            <h2 className="section-headline scramble-text">How It Works</h2>
+          </div>
+          <div className="how-it-works-row stagger-group">
+            {/* Step 1 */}
+            <div className="tilt-card card-base step-card stagger-item" style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}>
+              <div className="card-shine" style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', pointerEvents: 'none', zIndex: 1 }} />
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <div style={{ fontSize: 48, fontWeight: 900, color: 'var(--sec-accent-1)', opacity: 0.2, lineHeight: 1, marginBottom: 12, fontFamily: 'monospace' }}>01</div>
+                <h3 style={{ fontSize: 20, fontWeight: 700, color: 'var(--sec-text-1)', marginBottom: 10 }}>Load &amp; Graph Construction</h3>
+                <p style={{ fontSize: 14, color: 'var(--sec-text-2)', lineHeight: 1.7 }}>
+                  Load cybersecurity event logs from public cybersecurity benchmark datasets.
+                  The system automatically constructs heterogeneous temporal graphs with typed
+                  nodes (processes, files, network connections) and time-stamped edges.
+                </p>
+              </div>
+            </div>
+            {/* Step 2 */}
+            <div className="tilt-card card-base step-card stagger-item" style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}>
+              <div className="card-shine" style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', pointerEvents: 'none', zIndex: 1 }} />
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <div style={{ fontSize: 48, fontWeight: 900, color: 'var(--sec-accent-2)', opacity: 0.2, lineHeight: 1, marginBottom: 12, fontFamily: 'monospace' }}>02</div>
+                <h3 style={{ fontSize: 20, fontWeight: 700, color: 'var(--sec-text-1)', marginBottom: 10 }}>V16 Apex TGNN Analysis</h3>
+                <p style={{ fontSize: 14, color: 'var(--sec-text-2)', lineHeight: 1.7 }}>
+                  The V16 Apex Temporal Graph Neural Network processes the constructed graph
+                  through six specialized modules: encoding, temporal modeling, memory banking,
+                  causal convolution, domain adaptation, and contrastive learning to produce
+                  threat classification scores.
+                </p>
+              </div>
+            </div>
+            {/* Step 3 */}
+            <div className="tilt-card card-base step-card stagger-item" style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}>
+              <div className="card-shine" style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', pointerEvents: 'none', zIndex: 1 }} />
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <div style={{ fontSize: 48, fontWeight: 900, color: 'var(--sec-accent-3)', opacity: 0.2, lineHeight: 1, marginBottom: 12, fontFamily: 'monospace' }}>03</div>
+                <h3 style={{ fontSize: 20, fontWeight: 700, color: 'var(--sec-text-1)', marginBottom: 10 }}>Alert, Reconstruct &amp; Explain</h3>
+                <p style={{ fontSize: 14, color: 'var(--sec-text-2)', lineHeight: 1.7 }}>
+                  On benchmark data, the system generates alerts with MITRE ATT&CK technique
+                  mappings, reconstructs the full attack chain chronologically, and provides
+                  temporal explainability for each detection decision.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════
+          SECTION 9: TECH STACK (warm-ember — DARK)
+          ═══════════════════════════════════════════════════════════ */}
+      <section id="section-tech-stack" data-scheme="warm-ember">
+        <div className="section-container">
+          <div className="section-header center reveal-up">
+            <div className="section-eyebrow" style={{ marginBottom: 12 }}>BUILT WITH</div>
+            <h2 className="section-headline scramble-text">Tech Stack</h2>
+          </div>
+          <div className="tech-badges reveal-up">
+            {['Next.js 16', 'TypeScript 5', 'React 19', 'Tailwind CSS 4', 'Three.js', 'PyTorch (model)', 'Recharts', 'shadcn/ui', 'GSAP', 'Lucide React'].map(tech => (
+              <span className="tech-badge" key={tech}>{tech}</span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════
+          SECTION 10: DATASETS (aurora-white — LIGHT)
+          ═══════════════════════════════════════════════════════════ */}
+      <section id="section-datasets" data-scheme="aurora-white">
+        <div className="section-container">
+          <div className="section-header center reveal-up">
+            <div className="section-eyebrow" style={{ marginBottom: 12 }}>DATA SOURCES</div>
+            <h2 className="section-headline scramble-text">Benchmark Datasets</h2>
+          </div>
+          <div className="datasets-grid stagger-group">
+            {/* DARPA TC v3 */}
+            <div className="card-base dataset-card stagger-item">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+                <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--sec-text-1)' }}>DARPA TC v3</h3>
+                <span className="dataset-badge benchmark">BENCHMARK</span>
+              </div>
+              <p style={{ fontSize: 14, color: 'var(--sec-text-2)', lineHeight: 1.7 }}>
+                DARPA Engagement 3 dataset featuring multi-stage APT scenarios with provenance
+                graphs. Contains labeled attack campaigns with detailed host-level event traces.
               </p>
-
-              <div className="terminal-block">
-                <button
-                  className={`terminal-copy-btn ${copied ? 'copied' : ''}`}
-                  onClick={handleCopy}
-                  aria-label="Copy install command"
-                >
-                  {copied ? '✓ Copied' : 'Copy'}
-                </button>
-                <span className="prompt">$</span>git clone https://github.com/Pratham2511/TGDetect-LandingPage.git
-                {'\n'}
-                <span className="prompt">$</span>cd TGDetect-LandingPage
-                {'\n'}
-                <span className="prompt">$</span>npm install
-                {'\n'}
-                <span className="prompt">$</span>npm run dev
+            </div>
+            {/* UNSW-NB15 */}
+            <div className="card-base dataset-card stagger-item">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+                <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--sec-text-1)' }}>UNSW-NB15</h3>
+                <span className="dataset-badge benchmark">BENCHMARK</span>
               </div>
-
-              <div className="cta-buttons">
-                <a
-                  href={GITHUB_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-primary"
-                >
-                  ↓ Download on GitHub
-                </a>
-                <a
-                  href={VERCEL_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-secondary"
-                >
-                  Launch Live Demo →
-                </a>
+              <p style={{ fontSize: 14, color: 'var(--sec-text-2)', lineHeight: 1.7 }}>
+                Comprehensive network intrusion dataset with 49 features covering 9 categories
+                of modern attacks. Widely used for evaluating network-based detection systems.
+              </p>
+            </div>
+            {/* LANL NetFlow */}
+            <div className="card-base dataset-card stagger-item">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+                <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--sec-text-1)' }}>LANL NetFlow</h3>
+                <span className="dataset-badge public-dataset">PUBLIC DATASET</span>
               </div>
-
-              <div className="trust-badges">
-                <span className="trust-badge">
-                  <span className="check">✓</span> MIT Licensed
-                </span>
-                <span className="trust-badge">
-                  <span className="check">✓</span> Open Source
-                </span>
-                <span className="trust-badge">
-                  <span className="check">✓</span> Next.js 16
-                </span>
-                <span className="trust-badge">
-                  <span className="check">✓</span> TypeScript 5
-                </span>
-                <span className="trust-badge">
-                  <span className="check">✓</span> Academic Research Project
-                </span>
-              </div>
+              <p style={{ fontSize: 14, color: 'var(--sec-text-2)', lineHeight: 1.7 }}>
+                Publicly released enterprise network dataset spanning 58 days of network flow
+                data. Provides authentic background traffic patterns for validation.
+              </p>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* ── FOOTER ── */}
-        <section id="section-footer" data-scheme="midnight-forest" style={{ padding: '48px 0' }}>
+      {/* ═══════════════════════════════════════════════════════════
+          SECTION 11: CTA (event-horizon — DARK)
+          ═══════════════════════════════════════════════════════════ */}
+      <section id="section-cta" data-scheme="event-horizon" className="dark-section">
+        <div className="spotlight-layer" />
+        <div className="section-container">
+          <div className="cta-section-inner">
+            <div className="reveal-up">
+              <div className="hero-eyebrow-badge" style={{ marginBottom: 20, display: 'inline-flex' }}>
+                <span style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: 'var(--sec-accent-1)', display: 'inline-block', flexShrink: 0 }} />
+                OPEN SOURCE RESEARCH — MIT LICENSE
+              </div>
+            </div>
+            <h2 className="cta-headline scramble-text reveal-up">
+              Explore TGDetect.<br />Running in Minutes.
+            </h2>
+            <p className="cta-sub reveal-up">
+              Clone the repository, install dependencies, and start exploring detection simulation,
+              attack backtracking, and temporal graph analysis on benchmark datasets.
+            </p>
+
+            {/* Terminal Block */}
+            <div className="terminal-block reveal-up">
+              <button className="terminal-copy-btn" onClick={handleCopy} aria-label="Copy commands">
+                {copied ? <Check size={13} /> : <Copy size={13} />} {copied ? 'Copied!' : 'Copy'}
+              </button>
+              <div className="terminal-content" />
+            </div>
+
+            {/* CTA Buttons */}
+            <div className="cta-buttons reveal-up">
+              <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="btn-primary">
+                <Github size={16} /> View on GitHub
+              </a>
+              <a onClick={() => scrollTo('section-overview')} className="btn-secondary">
+                Explore Platform
+              </a>
+            </div>
+
+            {/* Trust Badges */}
+            <div className="trust-badges reveal-up">
+              {['MIT Licensed', 'Open Source', 'Academic Research', 'Next.js 16', 'TypeScript 5'].map(badge => (
+                <span className="trust-badge" key={badge}>
+                  <span style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: 'var(--sec-accent-1)', display: 'inline-block', flexShrink: 0 }} />
+                  {badge}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════
+          SECTION 12: FOOTER (event-horizon)
+          ═══════════════════════════════════════════════════════════ */}
+      <section data-scheme="event-horizon">
+        <footer>
           <div className="footer-inner">
             <Logo />
             <div className="footer-links">
-              <a
-                href={GITHUB_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="footer-link"
-              >
-                GitHub
+              <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" style={{ fontSize: 14, fontWeight: 500, color: 'var(--sec-text-2)', textDecoration: 'none', transition: 'color 0.2s', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Github size={14} /> GitHub
               </a>
-              <a
-                href={VERCEL_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="footer-link"
-              >
-                Live Demo
-              </a>
-              <a href="#section-overview" className="footer-link" onClick={(e) => { e.preventDefault(); scrollTo('section-overview'); }}>
+              <a onClick={() => scrollTo('section-architecture')} style={{ fontSize: 14, fontWeight: 500, color: 'var(--sec-text-2)', textDecoration: 'none', transition: 'color 0.2s', cursor: 'pointer' }}>
                 Documentation
               </a>
-              <a
-                href={GITHUB_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="footer-link"
-              >
+              <a href={`${GITHUB_URL}/blob/main/LICENSE`} target="_blank" rel="noopener noreferrer" style={{ fontSize: 14, fontWeight: 500, color: 'var(--sec-text-2)', textDecoration: 'none', transition: 'color 0.2s' }}>
                 License
+              </a>
+              <a onClick={() => scrollTo('section-overview')} style={{ fontSize: 14, fontWeight: 500, color: 'var(--sec-text-2)', textDecoration: 'none', transition: 'color 0.2s', cursor: 'pointer' }}>
+                Platform
               </a>
             </div>
           </div>
           <div className="footer-copyright">
-            © 2026 TGDetect. V16 Apex Temporal Graph Neural Network — Advanced Persistent Threat
-            Detection. All evaluations performed on publicly available benchmark datasets.
+            <p style={{ marginBottom: 6 }}>© 2026 TGDetect — Academic Research Project.</p>
+            <p style={{ marginBottom: 4, opacity: 0.7 }}>V16 Apex Temporal Graph Neural Network for Advanced Persistent Threat Detection.</p>
+            <p style={{ opacity: 0.5, fontSize: 12 }}>All evaluations performed on publicly available benchmark datasets.</p>
           </div>
-        </section>
-      </main>
+        </footer>
+      </section>
     </div>
   );
 }

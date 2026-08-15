@@ -1,6 +1,7 @@
 /* ============================================================
    TGDetect Landing Page — DESKTOP STYLESHEET (>=1024px)
    Loaded via @import in landing.css
+   Neural Signal color system — all elements use var(--sec-*)
    ============================================================ */
 
 @media (min-width: 1024px) {
@@ -20,11 +21,11 @@
   }
 
   .landing-nav.scrolled {
-    background: rgba(5, 14, 8, 0.88);
+    background: rgba(4, 6, 15, 0.9);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     padding: 12px 80px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid rgba(108, 99, 255, 0.15);
   }
 
   .nav-links {
@@ -36,7 +37,7 @@
   .nav-links a {
     font-size: 14px;
     font-weight: 500;
-    color: var(--sec-text-2, #8BA3C7);
+    color: var(--sec-text-2);
     text-decoration: none;
     transition: color 0.2s ease;
     position: relative;
@@ -48,7 +49,7 @@
   }
 
   .nav-links a:hover {
-    color: var(--sec-text-1, #F0F6FF);
+    color: var(--sec-text-1);
   }
 
   .nav-links a.active::after {
@@ -60,7 +61,7 @@
     width: 4px;
     height: 4px;
     border-radius: 50%;
-    background: var(--sec-accent-1, #1A6FFF);
+    background: var(--sec-accent-1);
   }
 
   .nav-cta {
@@ -135,12 +136,12 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: rgba(76, 175, 80, 0.1);
-    border: 1px solid rgba(76, 175, 80, 0.3);
+    background: rgba(108, 99, 255, 0.1);
+    border: 1px solid rgba(108, 99, 255, 0.3);
     border-radius: 20px;
     padding: 6px 14px;
     font-size: 12px;
-    color: var(--sec-accent-1, #1A6FFF);
+    color: var(--sec-accent-1);
     font-weight: 600;
     letter-spacing: 0.5px;
     margin-bottom: 28px;
@@ -230,12 +231,14 @@
     font-size: clamp(36px, 3.5vw, 56px);
     font-weight: 800;
     line-height: 1.1;
+    color: var(--sec-text-1);
   }
 
   .section-subheadline {
     font-size: 17px;
     line-height: 1.75;
     max-width: 640px;
+    color: var(--sec-text-2);
   }
 
   /* ─── TWO-COLUMN OVERVIEW ─── */
@@ -314,14 +317,35 @@
     padding: 32px 24px;
   }
 
-  /* ─── CUSTOM CURSOR ─── */
+  /* ─── CUSTOM CURSOR (Neural Signal) ─── */
   .landing-page {
     cursor: none;
   }
 
-  .custom-cursor,
-  .custom-cursor-ring {
-    display: block;
+  .cursor-dot {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--cursor-color, #6C63FF);
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    mix-blend-mode: screen;
+    transition: background 0.5s ease;
+  }
+
+  .cursor-ring {
+    position: fixed;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1.5px solid var(--cursor-color, #6C63FF);
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    opacity: 0.4;
+    transition: background 0.5s ease;
   }
 
   /* ─── BULLET LIST ─── */
@@ -370,6 +394,7 @@
     letter-spacing: -0.035em;
     line-height: 1.05;
     margin-bottom: 24px;
+    color: var(--sec-text-1);
   }
 
   .cta-sub {
@@ -399,7 +424,7 @@
     margin: 32px auto;
   }
 
-  /* ─── SECTION HEADER (with optional center alignment) ─── */
+  /* ─── SECTION HEADER ─── */
   .section-header {
     margin-bottom: 56px;
   }
@@ -411,5 +436,80 @@
   .section-header.center .section-subheadline {
     margin-left: auto;
     margin-right: auto;
+  }
+
+  /* ─── HERO DISCLAIMER ─── */
+  .hero-disclaimer {
+    max-width: 520px;
+    border-left: 2px solid var(--sec-accent-1);
+    font-size: 12px;
+    color: var(--sec-text-muted);
+    padding: 12px 16px;
+    margin-top: 20px;
+    line-height: 1.6;
+  }
+
+  /* ─── FOOTER ─── */
+  .footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 48px 80px;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 24px;
+  }
+
+  .footer-copyright {
+    font-size: 13px;
+    color: var(--sec-text-muted);
+    text-align: center;
+    padding: 24px 80px;
+    border-top: 1px solid var(--sec-border);
+  }
+
+  /* ─── TRUST BADGES ─── */
+  .trust-badges {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 32px;
+  }
+
+  .trust-badge {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--sec-text-muted);
+    background: var(--sec-surface);
+    border: 1px solid var(--sec-border);
+    border-radius: 20px;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* ─── TECH BADGES ─── */
+  .tech-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  /* ─── STATS FOOTNOTE ─── */
+  .stats-footnote {
+    font-size: 11px;
+    color: var(--sec-text-muted);
+    text-align: center;
+    padding: 16px 80px 40px;
+    max-width: 1280px;
+    margin: 0 auto;
+    line-height: 1.6;
   }
 }
